@@ -14,6 +14,14 @@ const meetingSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    province: {
+        type: String,
+        required: true
+    },
+    postalCode: {
+        type: String,
+        required: true
+    },
     startingDate: {
         type: Date,
         required: true
