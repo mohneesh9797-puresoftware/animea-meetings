@@ -59,31 +59,43 @@ const meetingSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     name: {
         type: String,
-        required: true
+        required: true,
+        maxlength: 240
     },
     description: {
         type: String,
-        required: true
+        required: true,
+        maxlength: 500
     },
     address: {
         type: String,
-        required: true
+        required: true,
+        maxlength: 240
     },
     province: {
         type: String,
         enum: Object.values(Provinces),
-        required: true
+        required: true,
     },
     postalCode: {
         type: String,
-        required: true
+        required: true,
+        maxlength: 5
     },
     startingDate: {
         type: Date,
-        required: true
+        required: true,
+        min: Date.now()
     },
-    endingDate: Date,
-    capacity: Number,
+    endingDate: {
+        type: Date,
+        min: Date.now()
+    },
+    capacity: {
+        type: Number,
+        min: 2,
+        max: 500
+    },
     creatorId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
