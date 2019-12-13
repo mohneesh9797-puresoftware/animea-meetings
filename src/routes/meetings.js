@@ -49,8 +49,8 @@ router.get('/:meetingId', (req, res, next) => {
         res.status(404).json({ error: "Not Valid ID" });
     }
 
-    Meeting.findById(req.params.meetingId).exec()
-        .then(doc => {
+    Meeting.findById(req.params.meetingId).select("_id name description address province postalCode startingDate endingDate capacity creatorId")
+        .exec().then(doc => {
             console.log(doc);
             if (doc) {
                 res.status(200).json(doc);
@@ -75,17 +75,31 @@ router.post('/', (req, res, next) => {
         startingDate: req.body.startingDate,
         endingDate: req.body.endingDate,
         capacity: req.body.capacity,
+        // En realidad se usa el token del usuario loggeado.
+        // Hasta que esté implementado, creamos un ID de prueba.
         creatorId: new mongoose.Types.ObjectId()
     });
 
     meeting.save().then(result => {
         console.log(result);
-    }).catch(err => console.log(err));
-
-    res.status(201).json({
-        message: 'Handling POST requests to /meetings',
-        createdMeeting: meeting
+        res.status(201).json({
+            _id: result._id,
+            name: result.name,
+            descrption: result.description,
+            address: result.address,
+            province: result.province,
+            postalCode: result.postalCode,
+            startingDate: result.startingDate,
+            endingDate: result.endingDate,
+            capacity: result.capacity,
+            creatorId: result.creatorId,
+        });
+    }).catch(err => {
+        console.log(err);
+        res.status(400).json({error: err});
     });
+
+    
 });
 
 module.exports = router;
