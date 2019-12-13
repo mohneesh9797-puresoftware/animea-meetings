@@ -45,11 +45,20 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/:meetingId', (req, res, next) => {
+    if(!mongoose.Types.ObjectId.isValid(req.params.meetingId)) {
+        res.status(404).json({ error: "Not Valid ID" });
+    }
+
     Meeting.findById(req.params.meetingId).exec()
         .then(doc => {
             console.log(doc);
-            res.status(200).json(doc);
-        }).catch(err => {
+            if (doc) {
+                res.status(200).json(doc);
+            } else {
+                res.status(404).json({ error: "Error 404 Not Found" });
+            }
+        })
+        .catch(err => {
             console.log(err);
             res.status(500).json({error: err});
         });
