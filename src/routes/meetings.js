@@ -7,6 +7,11 @@ const { Provinces } = require('../models/meeting');
 
 const provincesValues = Object.values(Provinces);
 
+// ----------------- GET /meetings -----------------
+// Devuelve todo el listado de meetings. Se puede
+// paginar controlando el número de página y de
+// resultados por página, y filtrar por provincia.
+
 router.get('/', (req, res, next) => {
 
     var page = 0;
@@ -44,6 +49,11 @@ router.get('/', (req, res, next) => {
         });
 });
 
+
+// ------------ GET /meetings/:meetingId -----------
+// Devuelve el meeting correspondiente a la ID que
+// se indique.
+
 router.get('/:meetingId', (req, res, next) => {
     if(!mongoose.Types.ObjectId.isValid(req.params.meetingId)) {
         res.status(404).json({ error: "Not Valid ID" });
@@ -63,6 +73,12 @@ router.get('/:meetingId', (req, res, next) => {
             res.status(500).json({error: err});
         });
 });
+
+// ----------------- POST /meetings ----------------
+// Crea un nuevo meeting y se hace una llamada al
+// microservicio de Profile para añadir al listado
+// de meetings del usuario que lo crea la ID del
+// nuevo meeting.
 
 router.post('/', (req, res, next) => {
     const meeting = new Meeting({
@@ -100,6 +116,34 @@ router.post('/', (req, res, next) => {
     });
 
     
+});
+
+
+// ---------- DELETE /meetings/:meetingId ----------
+// Elimina el meeting correspondiente a la ID que
+// se indique.
+
+router.delete('/:meetingId', (req, res, next) => {
+
+    if(!mongoose.Types.ObjectId.isValid(req.params.meetingId)) {
+        res.status(404).json({ error: "Not Valid ID" });
+    }
+    
+    const meetingId = req.params.meetingId;
+
+    Meeting.deleteOne({_id : meetingId}).exec().then(doc => {
+        console.log(doc);
+        if (doc.deletedCount == 1) {
+            res.status(204).json({});
+        } else {
+            res.status(404).json({ error: "Error 404 Not Found" });
+        }
+    }).catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
 });
 
 module.exports = router;
