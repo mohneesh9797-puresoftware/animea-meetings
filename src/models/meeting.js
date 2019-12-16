@@ -95,7 +95,6 @@ const meetingSchema = mongoose.Schema({
         type: Number,
         min: 2,
         max: 500
-    
     },
     creatorId: {
         type: mongoose.Schema.Types.ObjectId,
