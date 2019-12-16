@@ -8,9 +8,9 @@ const { Provinces } = require('../models/meeting');
 const provincesValues = Object.values(Provinces);
 
 router.get('/', (req, res, next) => {
-
+    console.log(req)
     var page = 0;
-    var limit = 5;
+    var limit = 15;
     var province = '';
 
     var query = {};
@@ -45,6 +45,7 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/:meetingId', (req, res, next) => {
+    console.log(req)
     if(!mongoose.Types.ObjectId.isValid(req.params.meetingId)) {
         res.status(404).json({ error: "Not Valid ID" });
     }
@@ -65,41 +66,74 @@ router.get('/:meetingId', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
-    const meeting = new Meeting({
-        _id: new mongoose.Types.ObjectId(),
-        name: req.body.name,
-        description: req.body.description,
-        address: req.body.address,
-        province: req.body.province,
-        postalCode: req.body.postalCode,
-        startingDate: req.body.startingDate,
-        endingDate: req.body.endingDate,
-        capacity: req.body.capacity,
-        // En realidad se usa el token del usuario loggeado.
-        // Hasta que esté implementado, creamos un ID de prueba.
-        creatorId: new mongoose.Types.ObjectId()
-    });
+    var meeting = new Meeting();
 
-    meeting.save().then(result => {
-        console.log(result);
-        res.status(201).json({
-            _id: result._id,
-            name: result.name,
-            descrption: result.description,
-            address: result.address,
-            province: result.province,
-            postalCode: result.postalCode,
-            startingDate: result.startingDate,
-            endingDate: result.endingDate,
-            capacity: result.capacity,
-            creatorId: result.creatorId,
-        });
-    }).catch(err => {
-        console.log(err);
-        res.status(400).json({error: err});
-    });
+        meeting._id = new mongoose.Types.ObjectId(),
+        meeting.name=req.body.name,
+        meeting.description= req.body.description,
+        meeting.address= req.body.address,
+        meeting.province= req.body.province,
+        meeting.postalCode= req.body.postalCode,
+        meeting.startingDate= req.body.startingDate,
+        meeting.endingDate= req.body.endingDate,
+        meeting.capacity= req.body.capacity,
+        // member
+        meeting.creatorId= new mongoose.Types.ObjectId()
+
+    meeting.save(function(err){
+        if(err){
+            res.send(err);
+        }
+        else{
+            res.json({
+                _id: meeting._id,
+                name: meeting.name,
+                description: meeting.description,
+                address: meeting.address,
+                province: meeting.province,
+                postalCode: meeting.postalCode,
+                startingDate: meeting.startingDate,
+                endingDate: meeting.endingDate,
+                capacity: meeting.capacity,
+                creatorId: meeting.creatorId
+            })
+        }
+    })
 
     
 });
+
+router.post('/user/:id/joinsMeeting/:meetingId', (req, res, next) => {
+    // meter dos find y luego no se que y luego save
+});
+
+router.put('/:meetingId', (req, res, next) => {
+    // if(req.creatorId != DEBERIA PONER el token )
+    Meeting.findById(req.params.meetingId, function(error, meeting){
+        if(error){
+            res.send(error);
+        }
+        meeting.name = req.body.name;
+        meeting.description= req.body.description,
+        meeting.address= req.body.address,
+        meeting.province= req.body.province,
+        meeting.postalCode= req.body.postalCode,
+        meeting.startingDate= req.body.startingDate,
+        meeting.endingDate= req.body.endingDate,
+        meeting.capacity= req.body.capacity,
+
+        meeting.save(function(err){
+            if(err){
+                res.send(err);
+            }
+            else{
+                res.json(' The meeting was successfully updated!')
+            }
+        })
+
+    });
+ });
+
+
 
 module.exports = router;
