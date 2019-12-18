@@ -37,7 +37,7 @@ router.get('/', (req, res, next) => {
         query['province'] = province;
     }
 
-    Meeting.find(query).select("_id name description address province postalCode startingDate endingDate capacity creatorId")
+    Meeting.find(query).select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
         .sort({startingDate: 'desc'})
         .skip(page * limit)
         .limit(limit)
@@ -64,7 +64,7 @@ router.get('/:meetingId', (req, res, next) => {
         res.status(404).json({ error: "Not Valid ID" });
     }
 
-    Meeting.findById(req.params.meetingId).select("_id name description address province postalCode startingDate endingDate capacity creatorId")
+    Meeting.findById(req.params.meetingId).select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
         .exec().then(doc => {
             console.log(doc);
             if (doc) {
@@ -105,7 +105,7 @@ router.get('/user/:userId', (req, res, next) => {
             }
         });
 
-    Meeting.find().where('_id').in(sampleMeetings).select("_id name description address province postalCode startingDate endingDate capacity creatorId")
+    Meeting.find().where('_id').in(sampleMeetings).select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
     .exec().then(doc => {
         console.log(doc);
         if (doc) {
@@ -139,7 +139,8 @@ router.post('/', (req, res, next) => {
         meeting.endingDate= req.body.endingDate,
         meeting.capacity= req.body.capacity,
         // member
-        meeting.creatorId= new mongoose.Types.ObjectId()
+        meeting.creatorId= new mongoose.Types.ObjectId(),
+        meeting.members = req.body.members
 
     meeting.save(function(err){
         if(err){
@@ -156,7 +157,8 @@ router.post('/', (req, res, next) => {
                 startingDate: meeting.startingDate,
                 endingDate: meeting.endingDate,
                 capacity: meeting.capacity,
-                creatorId: meeting.creatorId
+                creatorId: meeting.creatorId,
+                members: meeting.members
             })
         }
     })

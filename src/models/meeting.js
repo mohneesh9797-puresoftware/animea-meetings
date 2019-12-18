@@ -99,6 +99,10 @@ const meetingSchema = mongoose.Schema({
     creatorId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
+    },
+    members: {
+        type: [Number],
+        required: true
     }
 });
 
