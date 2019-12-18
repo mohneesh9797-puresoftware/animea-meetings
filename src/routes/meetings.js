@@ -1,9 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const axios = require('axios');
 
 const Meeting = require('../models/meeting')
 const { Provinces } = require('../models/meeting');
+const profileAxios = axios.create({
+    baseURL: 'http://localhost:3001/api/'
+})
 
 const provincesValues = Object.values(Provinces);
 
@@ -73,6 +77,47 @@ router.get('/:meetingId', (req, res, next) => {
             console.log(err);
             res.status(500).json({error: err});
         });
+});
+
+// ----------- GET /meetings/user/:userId ----------
+// Devuelve el listado de meetings a los que el
+// usuario con la ID indicada se ha unido.
+
+router.get('/user/:userId', (req, res, next) => {
+
+    const userId = req.params.userId.toString();
+    var meetingsIds = null;
+    var sampleMeetings = ['5df3d53acaba9a2420c4bd7b', '5df3d74082135e0b6843765c'];
+
+    profileAxios.get('user/' + userId + '/joinedMeetings')
+        .then(response => {
+            meetingsIds = response.data;
+            console.log(meetingsIds);
+        }).catch(ex => {
+            if (ex.message.includes('404')) {
+                res.status(404).json({
+                    error: ex.message
+                })
+            } else {
+                res.status(500).json({
+                    error: ex.message
+                })
+            }
+        });
+
+    Meeting.find().where('_id').in(sampleMeetings).select("_id name description address province postalCode startingDate endingDate capacity creatorId")
+    .exec().then(doc => {
+        console.log(doc);
+        if (doc) {
+            res.status(200).json(doc);
+        } else {
+            res.status(404).json({ error: "Error 404 Not Found" });
+        }
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({error: err});
+    });
 });
 
 // ----------------- POST /meetings ----------------
