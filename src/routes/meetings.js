@@ -13,8 +13,9 @@ const provincesValues = Object.values(Provinces);
 
 // ----------------- GET /meetings -----------------
 // Devuelve todo el listado de meetings. Se puede
-// paginar controlando el número de página y de
-// resultados por página, y filtrar por provincia.
+// paginar controlando el número de página y el
+// número de resultados por página, y filtrar por 
+// provincia.
 
 router.get('/', (req, res, next) => {
     console.log(req)
@@ -85,39 +86,35 @@ router.get('/:meetingId', (req, res, next) => {
 
 router.get('/user/:userId', (req, res, next) => {
 
-    const userId = req.params.userId.toString();
-    var meetingsIds = null;
-    var sampleMeetings = ['5df3d53acaba9a2420c4bd7b', '5df3d74082135e0b6843765c'];
+    var userId = req.params.userId.toString();
+    var meetingsIds = [];
+    // var testData = ['5df3d53acaba9a2420c4bd7b', '5df3d74082135e0b6843765c']; // meetingsIds replacement
 
     profileAxios.get('user/' + userId + '/joinedMeetings')
-        .then(response => {
-            meetingsIds = response.data;
-            console.log(meetingsIds);
+        .then(doc => {
+            console.log(doc.data);
+            meetingsIds = doc.data;
+
         }).catch(ex => {
+            var statusNumber = 500;
             if (ex.message.includes('404')) {
-                res.status(404).json({
-                    error: ex.message
-                })
-            } else {
-                res.status(500).json({
-                    error: ex.message
-                })
+                statusNumber = 404;
             }
+
+            res.status(statusNumber).json({
+                error: ex.message
+            })
         });
 
-    Meeting.find().where('_id').in(sampleMeetings).select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
-    .exec().then(doc => {
-        console.log(doc);
-        if (doc) {
+    Meeting.find().where('_id').in(meetingsIds).select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
+        .exec().then(doc => {
             res.status(200).json(doc);
-        } else {
-            res.status(404).json({ error: "Error 404 Not Found" });
-        }
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({error: err});
-    });
+        })
+        .catch(ex => {
+            res.status(500).json({
+                error: ex
+            })
+        });
 });
 
 // ----------------- POST /meetings ----------------
