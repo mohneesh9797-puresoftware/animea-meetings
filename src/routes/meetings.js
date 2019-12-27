@@ -20,24 +20,31 @@ const provincesValues = Object.values(Provinces);
 router.get('/', (req, res, next) => {
     console.log(req)
     var page = 0;
-    var limit = 15;
+    var limit = 5;
     var province = '';
 
     var query = {};
 
+    // Comprueba que página del listado se debe devolver.
     if (req.query.page && parseInt(req.query.page) > 0) {
         page = parseInt(req.query.page) - 1;
     }
 
+    // Comprueba cuántos resultados por página se deben
+    // devolver.
     if (req.query.limit && parseInt(req.query.limit) > 0) {
         limit = parseInt(req.query.limit);
     }
 
+    // Comprueba si existe filtrado por provincia y si
+    // es así, qué provincia se debe filtrar.
     if (req.query.province && provincesValues.includes(req.query.province.toLowerCase())) {
         province = req.query.province.toLowerCase();
         query['province'] = province;
     }
 
+    // Obtiene de la base de datos los meetings filtrados
+    // y paginados, ordenados por su startingDate.
     Meeting.find(query).select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
         .sort({startingDate: 'desc'})
         .skip(page * limit)
