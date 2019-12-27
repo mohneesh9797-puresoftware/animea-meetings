@@ -91,37 +91,52 @@ router.get('/:meetingId', (req, res, next) => {
 // Devuelve el listado de meetings a los que el
 // usuario con la ID indicada se ha unido.
 
+async function getMeetingsFromUser(userId) {
+
+    try {
+        // Llamada a la API del microservicio Profile para
+        // obtener el listado de IDs de los meetings del
+        // usuario.
+        let doc = await profileAxios.get('user/' + userId + '/joinedMeetings');
+        let meetingsIds = doc.data;
+
+        // Obtiene de la base de datos los meetings cuyo
+        // ID se encuentra en el listado obtenido anteriormente.
+        let meetingsCollection = await Meeting.find().where('_id').in(meetingsIds)
+            .select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
+            .exec();
+        
+        return [false, meetingsCollection];
+    
+    } catch (error) {
+
+        return [true, error];
+    }
+}
+
 router.get('/user/:userId', (req, res, next) => {
 
     var userId = req.params.userId.toString();
-    var meetingsIds = [];
-    // var testData = ['5df3d53acaba9a2420c4bd7b', '5df3d74082135e0b6843765c']; // meetingsIds replacement
 
-    profileAxios.get('user/' + userId + '/joinedMeetings')
-        .then(doc => {
-            console.log(doc.data);
-            meetingsIds = doc.data;
-
-        }).catch(ex => {
+    getMeetingsFromUser(userId).then(doc => {
+        if (doc[0]) {
+            console.log(doc[1]);
             var statusNumber = 500;
-            if (ex.message.includes('404')) {
+            var errorMessage = "Request failed with status code 500.";
+
+            if (doc[1].message.includes('404')) {
                 statusNumber = 404;
+                errorMessage = "Error 404: We couldn't find any user with the given ID.";
             }
 
             res.status(statusNumber).json({
-                error: ex.message
+                error: errorMessage
             })
-        });
-
-    Meeting.find().where('_id').in(meetingsIds).select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
-        .exec().then(doc => {
-            res.status(200).json(doc);
-        })
-        .catch(ex => {
-            res.status(500).json({
-                error: ex
-            })
-        });
+        } else {
+            console.log(doc[1]);
+            res.status(200).json(doc[1]);
+        }
+    });
 });
 
 // ----------------- POST /meetings ----------------
