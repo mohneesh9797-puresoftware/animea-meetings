@@ -212,6 +212,114 @@ router.delete('/:meetingId', (req, res, next) => {
     });
 });
 
+// ------- DELETE /meetings/leave/:meetingId -------
+// El usuario que realiza la llamada abandona el
+// listado de asistentes del meeting cuya ID se
+// indica por parámetros.
+
+async function leaveMeeting(meetingId) {
+
+    try {
+        var nowDate = new Date(Date.now());
+
+        // TODO: Comprobar que existe un usuario autenticado y
+        // obtener su ID.
+        let fakeUserId = "1";
+
+        // Obtiene de la base de datos el meeting que se
+        // pretende abandonar.
+        let doc = await Meeting.findById(meetingId)
+            .select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
+            .exec();
+        
+        // Comprobar que existe un meeting con la ID proporcionada.
+        if (!doc) {
+            throw "Error 404: We couldn't find any meeting with the given ID."
+
+        // Comprobar que la ID del usuario que está intentando
+        // abandonar el meeting no coincide con su creatorId.
+        } else if (doc.creatorId.toString().localeCompare(fakeUserId) == 0) {
+            throw "Error 400: You can't leave a meeting that you created.";
+
+        // Comprobar que la startingDate del meeting es futura
+        // y, por tanto, dicho meeting no ha comenzado.
+        } else if (doc.startingDate <= nowDate) {
+            throw "Error 400: You can't leave the meeting. It has already started.";
+
+        // Comprobar que la ID del usuario autenticado se
+        // encuentra en el listado de members del meeting.
+        } else if (!doc.members.includes(fakeUserId)) {
+            throw "Error 400: You can't leave a meeting that you are not a member of.";
+        
+        } else {
+            // Eliminar la ID del usuario autenticado del listado
+            // de members del meeting.
+            var newMembers = doc.members;
+            newMembers.splice(newMembers.indexOf(fakeUserId), 1);
+
+            // Actualizar el meeting con su nuevo listado de
+            // members en la base de datos.
+            let updatedMeeting = await Meeting.findByIdAndUpdate(meetingId, {members: newMembers});
+            console.log(updatedMeeting);
+
+            // Llamada al microservicio de Profile para actualizar
+            // las dependencias y reflejar el abandono del usuario
+            // del meeting.
+            await profileAxios.put('user/' + fakeUserId + '/leavesMeeting/' + meetingId);
+
+            return [false, updatedMeeting];
+        }
+    
+    } catch (error) {
+        return [true, error];
+    }
+}
+
+router.delete('/leave/:meetingId', (req, res, next) => {
+
+    // Comprobar que se pasa una ID válida como parámetro.
+    if(!mongoose.Types.ObjectId.isValid(req.params.meetingId)) {
+        res.status(404).json({ error: "Error 404: We couldn't find any meeting with the given ID." });
+
+    } else {
+        var meetingId = req.params.meetingId;
+
+        // Llamada al método asíncrono principal que se encarga
+        // de eliminar al usuario del meeting y actualizar los
+        // datos en el microservicio Profile
+        leaveMeeting(meetingId).then(doc => {
+
+            // Comprobar si se ha producido un error (doc[0] = true) y
+            // enviar el código y mensaje adecuados.
+            if (doc[0]) {
+                console.log(doc[1]);
+                var statusNumber = 500;
+                var errorMessage = "Request failed with status code 500.";
+
+                if (typeof doc[1] === "string") {
+                    errorMessage = doc[1];
+
+                    if (doc[1].includes("400")) {
+                        statusNumber = 400;
+                    } else if (doc[1].includes("404")) {
+                        statusNumber = 404;
+                    }
+                } else if (doc[1].message.includes("400")) {
+                    statusNumber = 400;
+                    errorMessage = "Error 400: You can't leave a meeting that you are not a member of.";
+                }
+
+                res.status(statusNumber).json({
+                    error: errorMessage
+                })
+            } else {
+                console.log(doc[1]);
+                res.status(200).json(doc[1]);
+            }
+        });
+    }
+});
+
 router.post('/user/:id/joinsMeeting/:meetingId', (req, res, next) => {
     // meter dos find y luego no se que y luego save
 });
