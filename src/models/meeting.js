@@ -97,7 +97,7 @@ const meetingSchema = mongoose.Schema({
         max: 500
     },
     creatorId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Number,
         required: true
     },
     members: {

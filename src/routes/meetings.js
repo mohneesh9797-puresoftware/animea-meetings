@@ -136,7 +136,7 @@ router.post('/', (req, res, next) => {
         meeting.endingDate= req.body.endingDate,
         meeting.capacity= req.body.capacity,
         // member
-        meeting.creatorId= new mongoose.Types.ObjectId(),
+        meeting.creatorId= req.body.creatorId,
         meeting.members = req.body.members
 
     meeting.save(function(err){
