@@ -19,7 +19,7 @@ const provincesValues = Object.values(Provinces);
 // provincia.
 
 router.get('/', (req, res, next) => {
-    console.log(req)
+
     var page = 0;
     var limit = 5;
     var province = '';
@@ -61,12 +61,15 @@ router.get('/', (req, res, next) => {
         .limit(limit)
         .exec().then(docs => {
             console.log(docs);
-            res.status(200).json(docs);
+            res.status(200).json({
+                meetings: docs,
+                message: "Status 200: Meetings retrieved successfully."
+            });
         })
         .catch(err => {
             console.log(err);
             res.status(500).json({
-                error: err
+                error: "Error 500: Request failed with status code 500."
             })
         });
 });
@@ -77,23 +80,29 @@ router.get('/', (req, res, next) => {
 // se indique.
 
 router.get('/:meetingId', (req, res, next) => {
-    console.log(req)
+
+    // Comprobar que se pasa una ID válida como parámetro.
     if(!mongoose.Types.ObjectId.isValid(req.params.meetingId)) {
-        res.status(404).json({ error: "Not Valid ID" });
+        res.status(404).json({ error: "Error 404: We couldn't find any meeting with the given ID." });
     }
 
     Meeting.findById(req.params.meetingId).select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
         .exec().then(doc => {
             console.log(doc);
             if (doc) {
-                res.status(200).json(doc);
+                res.status(200).json({
+                    meeting: doc,
+                    message: "Status 200: Meeting retrieved successfully."
+                });
             } else {
-                res.status(404).json({ error: "Error 404 Not Found" });
+                res.status(404).json({
+                    error: "Error 404: We couldn't find any meeting with the given ID."
+                });
             }
         })
         .catch(err => {
             console.log(err);
-            res.status(500).json({error: err});
+            res.status(500).json({error: "Error 500: Request failed with status code 500."});
         });
 });
 
@@ -105,11 +114,17 @@ router.get('/user/:userId', (req, res, next) => {
 
     var userId = req.params.userId.toString();
 
+    // Llamada al método asíncrono principal que se encarga
+    // de hacer una llamada al microservicio Profile para
+    // posteriormente obtener los meetings de un usuario.
     meetingService.getMeetingsFromUser(userId).then(doc => {
+
+        // Comprobar si se ha producido un error (doc[0] = true) y
+        // enviar el código y mensaje adecuados.
         if (doc[0]) {
             console.log(doc[1]);
             var statusNumber = 500;
-            var errorMessage = "Request failed with status code 500.";
+            var errorMessage = "Error 500: Request failed with status code 500.";
 
             if (doc[1].message.includes('404')) {
                 statusNumber = 404;
@@ -121,7 +136,10 @@ router.get('/user/:userId', (req, res, next) => {
             })
         } else {
             console.log(doc[1]);
-            res.status(200).json(doc[1]);
+            res.status(200).json({
+                meetings: doc[1],
+                message: "Status 200: User meetings retrieved successfully."
+            });
         }
     });
 });
@@ -133,23 +151,34 @@ router.get('/user/:userId', (req, res, next) => {
 // nuevo meeting.
 
 router.post('/', (req, res, next) => {
-    var meeting = new Meeting();
 
+    // Creamos un Meeting vacío con su constructor y
+    // le asignamos una ID.
+    var meeting = new Meeting();
     meeting._id = new mongoose.Types.ObjectId()
-    meeting.name=req.body.name
-    meeting.description= req.body.description
-    meeting.address= req.body.address
-    meeting.province= req.body.province
-    meeting.postalCode= req.body.postalCode
-    meeting.startingDate= req.body.startingDate
-    meeting.endingDate= req.body.endingDate
-    meeting.capacity= req.body.capacity
+
+    // Asignamos los valores que se han recibido en el body
+    // para cada atributo.
+    meeting.name = req.body.name
+    meeting.description = req.body.description
+    meeting.address = req.body.address
+    meeting.province = req.body.province
+    meeting.postalCode = req.body.postalCode
+    meeting.startingDate = req.body.startingDate
+    meeting.endingDate = req.body.endingDate
+    meeting.capacity = req.body.capacity
     
+    // Llamada al método asíncrono principal que se encarga
+    // de crear el meeting y actualizar las dependencias
+    // en el microservicio Profile
     meetingService.createMeeting(meeting).then(doc => {
+
+        // Comprobar si se ha producido un error (doc[0] = true) y
+        // enviar el código y mensaje adecuados.
         if (doc[0]) {
             console.log(doc[1]);
             var statusNumber = 500;
-            var errorMessage = "Request failed with status code 500.";
+            var errorMessage = "Error 500: Request failed with status code 500.";
 
             if (typeof doc[1] === "string") {
                 errorMessage = doc[1];
@@ -157,6 +186,13 @@ router.post('/', (req, res, next) => {
                 if (doc[1].includes("400")) {
                     statusNumber = 400;
                 }
+            } else if (doc[1].message.includes("400")) {
+                statusNumber = 400;
+                errorMessage = "Error 400: The meeting is invalid or user already joined it.";
+
+            } else if (doc[1].message.toLowerCase().includes("validation failed")) {
+                statusNumber = 400;
+                errorMessage = "Error 400: " + doc[1].message;
             }
 
             res.status(statusNumber).json({
@@ -164,7 +200,110 @@ router.post('/', (req, res, next) => {
             })
         } else {
             console.log(doc[1]);
-            res.status(200).json({message: "Successfully created!" });
+            res.status(201).json({
+                meeting: doc[1],
+                message: "Status 201: Meeting successfully created!"
+            });
+        }
+    });
+});
+
+// --------- POST /meetings/join/:meetingId --------
+// El usuario que está autenticado se une al
+// meeting referenciado mediante su meetingId.
+
+router.post('/join/:meetingId', (req, res, next) => {
+
+    // Comprobar que se pasa una ID válida como parámetro.
+    if(!mongoose.Types.ObjectId.isValid(req.params.meetingId)) {
+        res.status(404).json({ error: "Error 404: We couldn't find any meeting with the given ID."});
+    }
+
+    // Llamada al método asíncrono principal que se encarga
+    // de añadir al usuario al meeting y actualizar las
+    // dependencias en el microservicio Profile.
+    meetingService.joinMeeting(req.params.meetingId).then(doc => {
+
+        // Comprobar si se ha producido un error (doc[0] = true) y
+        // enviar el código y mensaje adecuados.
+        if (doc[0]) {
+            console.log(doc[1]);
+            var statusNumber = 500;
+            var errorMessage = "Error 500: Request failed with status code 500.";
+
+            if (typeof doc[1] === "string") {
+                errorMessage = doc[1];
+
+                if (doc[1].includes("400")) {
+                    statusNumber = 400;
+                } else if (doc[1].includes("404")) {
+                    statusNumber = 404;
+                }
+            } else if (doc[1].message.includes("400")) {
+                statusNumber = 400;
+                errorMessage = "Error 400: The meeting is invalid or user already joined it.";
+            }
+
+            res.status(statusNumber).json({
+                error: errorMessage
+            })
+        } else {
+            console.log(doc[1]);
+            res.status(200).json({
+                meeting: doc[1],
+                message: "Status 200: Meeting joined successfully!"
+            });
+        }
+    });
+});
+
+// ------------ PUT /meetings/:meetingId -----------
+// Actualización de los datos básicos del meeting
+// cuya ID se indica.
+
+router.put('/:meetingId', (req, res, next) => {
+
+    // Comprobar que se pasa una ID válida como parámetro.
+    if(!mongoose.Types.ObjectId.isValid(req.params.meetingId)) {
+        res.status(404).json({ error: "Error 404: We couldn't find any meeting with the given ID."});
+    }
+
+    var requestBody = req.body;
+
+    // Llamada al método asíncrono principal que se encarga
+    // de actualizar el meeting.
+    meetingService.updateMeeting(requestBody, req.params.meetingId).then(doc => {
+
+        // Comprobar si se ha producido un error (doc[0] = true) y
+        // enviar el código y mensaje adecuados.
+        if (doc[0]) {
+            console.log(doc[1]);
+            var statusNumber = 500;
+            var errorMessage = "Error 500: Request failed with status code 500.";
+
+            if (typeof doc[1] === "string") {
+                errorMessage = doc[1];
+
+                if (doc[1].includes("400")) {
+                    statusNumber = 400;
+                } else if (doc[1].includes("404")) {
+                    statusNumber = 404;
+                }
+
+            } else if (doc[1].message.toLowerCase().includes("validation failed")) {
+                statusNumber = 400;
+                errorMessage = "Error 400: " + doc[1].message;
+            }
+
+            res.status(statusNumber).json({
+                error: errorMessage
+            })
+        } else {
+            console.log(doc[1]);
+            res.status(200).json({
+                meeting: doc[1],
+                message: "Status 200: Meeting successfully updated!"
+            });
         }
     });
 });
@@ -192,7 +331,7 @@ router.delete('/:meetingId', (req, res, next) => {
             if (doc[0]) {
                 console.log(doc[1]);
                 var statusNumber = 500;
-                var errorMessage = "Request failed with status code 500.";
+                var errorMessage = "Error 500: Request failed with status code 500.";
 
                 if (typeof doc[1] === "string") {
                     errorMessage = doc[1];
@@ -212,7 +351,9 @@ router.delete('/:meetingId', (req, res, next) => {
                 })
             } else {
                 console.log(doc[1]);
-                res.status(200).json(doc[1]);
+                res.status(204).json({
+                    message: "Status 204: Meeting successfully deleted!"
+                });
             }
         });
     }
@@ -242,7 +383,7 @@ router.delete('/leave/:meetingId', (req, res, next) => {
             if (doc[0]) {
                 console.log(doc[1]);
                 var statusNumber = 500;
-                var errorMessage = "Request failed with status code 500.";
+                var errorMessage = "Error 500: Request failed with status code 500.";
 
                 if (typeof doc[1] === "string") {
                     errorMessage = doc[1];
@@ -262,84 +403,13 @@ router.delete('/leave/:meetingId', (req, res, next) => {
                 })
             } else {
                 console.log(doc[1]);
-                res.status(200).json(doc[1]);
+                res.status(200).json({
+                    meeting: doc[1],
+                    message: "Status 200: You successfully leaved the meeting."
+                });
             }
         });
     }
 });
-
-router.post('/join/:meetingId', (req, res, next) => {
-    //Compruebo que existe un Meeting con el :id indicado
-    if(!mongoose.Types.ObjectId.isValid(req.params.meetingId)) {
-        res.status(404).json({ error: "Error 404: We couldn't find any meeting with the given ID." });
-
-    } else {
-        var meetingId = req.params.meetingId;
-        meetingService.joinMeeting(meetingId).then(doc => {
-
-            // Comprobar si se ha producido un error (doc[0] = true) y
-            // enviar el código y mensaje adecuados.
-            if (doc[0]) {
-                console.log(doc[1]);
-                var statusNumber = 500;
-                var errorMessage = "Request failed with status code 500.";
-
-                if (typeof doc[1] === "string") {
-                    errorMessage = doc[1];
-
-                    if (doc[1].includes("400")) {
-                        statusNumber = 400;
-                    } else if (doc[1].includes("404")) {
-                        statusNumber = 404;
-                    }
-                } else if (doc[1].message.includes("400")) {
-                    statusNumber = 400;
-                    errorMessage = "Error 400: The meeting is invalid or user already joined it.";
-                }
-
-                res.status(statusNumber).json({
-                    error: errorMessage
-                })
-            } else {
-                console.log(doc[1]);
-                res.status(200).json({message: "Successfully joined!" });
-            }
-        });
-    }
-});
-
-router.put('/:meetingId', (req, res, next) => {
-    var fakeUserId = "1";
-    if(req.body.startingDate > req.body.endingDate) {
-        res.status(400).json({ error:"Error 400: The starting date can't be after the ending date"});
-        } else if (req.body.capacity < req.body.members) {
-            res.status(400).json({ error:"Error 400: Capacity can't be less than the current number of members"});
-        }
-    Meeting.findById(req.params.meetingId, function(error, meeting){
-        if(error){
-            res.send(error);
-        } else if (req.creatorId != fakeUserId) {
-            res.send(error);
-        }
-        meeting.name = req.body.name;
-        meeting.description= req.body.description,
-        meeting.address= req.body.address,
-        meeting.province= req.body.province,
-        meeting.postalCode= req.body.postalCode,
-        meeting.startingDate= req.body.startingDate,
-        meeting.endingDate= req.body.endingDate,
-        meeting.capacity= req.body.capacity,
-
-        meeting.save(function(err){
-            if(err){
-                res.send(err);
-            }
-            else{
-                res.json(' The meeting was successfully updated!')
-            }
-        })
-
-    });
- });
 
 module.exports = router;

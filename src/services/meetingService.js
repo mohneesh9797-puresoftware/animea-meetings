@@ -21,6 +21,7 @@ module.exports = {
             let meetingsCollection = await Meeting.find().where('_id').in(meetingsIds)
                 .select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
                 .exec();
+            console.log(meetingsCollection);
             
             return [false, meetingsCollection];
         
@@ -51,16 +52,18 @@ module.exports = {
 
                 // Guardar.
                 let createdMeeting = await meeting.save();
+                console.log(createdMeeting);
         
                 // Llamada al microservicio de Profile para actualizar
-                // las dependencias y reflejar el abandono del usuario
-                // del meeting.
+                // las dependencias y reflejar la unión del usuario
+                // al meeting.
                 await profileAxios.put('user/' + fakeUserId + '/joinsMeeting/' + meeting._id);
     
                 return [false, createdMeeting];
             }
         
         } catch (error) {
+            
             return [true, error];
         }
     },
@@ -79,6 +82,7 @@ module.exports = {
             let doc = await Meeting.findById(meetingId)
                 .select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
                 .exec();
+            console.log(doc);
             
             // Comprobar que existe un meeting con la ID proporcionada.
             if (!doc) {
@@ -110,7 +114,7 @@ module.exports = {
                     await profileAxios.put('user/' + members[i] + '/leavesMeeting/' + meetingId);
                 }
     
-                return [false, members];
+                return [false, null];
             }
         
         } catch (error) {
@@ -160,7 +164,7 @@ module.exports = {
     
                 // Actualizar el meeting con su nuevo listado de
                 // members en la base de datos.
-                let updatedMeeting = await Meeting.findByIdAndUpdate(meetingId, {members: newMembers});
+                let updatedMeeting = await Meeting.findByIdAndUpdate(meetingId, {members: newMembers}, {new: true});
                 console.log(updatedMeeting);
     
                 // Llamada al microservicio de Profile para actualizar
@@ -216,20 +220,74 @@ module.exports = {
     
                 // Actualizar el meeting con su nuevo listado de
                 // members en la base de datos.
-                let updatedMeeting = await Meeting.findByIdAndUpdate(meetingId, {members: newMembers});
+                let updatedMeeting = await Meeting.findByIdAndUpdate(meetingId, {members: newMembers}, {new: true});
                 console.log(updatedMeeting);
     
                 // Llamada al microservicio de Profile para actualizar
-                // las dependencias y reflejar el abandono del usuario
-                // del meeting.
+                // las dependencias y reflejar la unión del usuario
+                // al meeting.
                 await profileAxios.put('user/' + fakeUserId + '/joinsMeeting/' + meetingId);
     
                 return [false, updatedMeeting];
             }
         
         } catch (error) {
+
             return [true, error];
         }
-    }
+    },
 
+    updateMeeting: async function (requestBody, meetingId) {
+
+        try {
+    
+            // TODO: Comprobar que existe un usuario autenticado y
+            // obtener su ID.
+            let fakeUserId = "1";
+            
+            // Comprobar que la startingDate del meeting es anterior a la endingDate.
+            if (requestBody.startingDate > requestBody.endingDate) {
+                throw "Error 400: The starting date can't be after the ending date";
+
+            // Comprobar que la capacidad del meeting no es menor al número de miembros
+            // ya registrados en el meeting.
+            } else if (requestBody.capacity < requestBody.members) {
+                throw "Error 400: Capacity can't be less than the current number of members";
+
+            } else {
+                // Obtiene de la base de datos el meeting que se quiere actualizar.
+                let doc = await Meeting.findById(meetingId)
+                    .select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
+                    .exec();
+                console.log(doc);
+
+                // Comprobar que existe un meeting con la ID proporcionada.
+                if (!doc) {
+                    throw "Error 404: We couldn't find any meeting with the given ID."
+
+                // Comprobar que la ID del usuario que está intentando
+                // actualizar el meeting coincide con su creatorId.
+                } else if (doc.creatorId.toString().localeCompare(fakeUserId) != 0) {
+                    throw "Error 400: You can't update a meeting that you didn't create.";
+
+                } else {
+                    // Actualizar el meeting con sus nuevos atributos
+                    // en la base de datos.
+                    let updatedMeeting = await Meeting.findByIdAndUpdate(meetingId, 
+                        {name: requestBody.name, description: requestBody.description,
+                            address: requestBody.address, province: requestBody.province,
+                            postalCode: requestBody.postalCode, startingDate: requestBody.startingDate,
+                            endingDate: requestBody.endingDate, capacity: requestBody.capacity}, 
+                        {new: true, runValidators: true});
+                    console.log(updatedMeeting);
+
+                    return [false, updatedMeeting];
+                }
+            }
+        
+        } catch (error) {
+            
+            return [true, error];
+        }
+    },
 }
