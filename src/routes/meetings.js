@@ -262,9 +262,39 @@ router.delete('/leave/:meetingId', (req, res, next) => {
     }
 });
 
-router.post('/user/:id/joinsMeeting/:meetingId', (req, res, next) => {
-    // meter dos find y luego no se que y luego save
-});
+router.post('/meetings/join/:meetingsId', (req, res, next) => {
+    //Compruebo que existe un Meeting con el :id indicado
+    //No existe: Error (404)
+    if(!mongoose.Types.ObjectId.isValid(req.params.meetingId)) {
+        res.status(404).json({ error: "Error 404: We couldn't find any meeting with the given ID." });
+
+    } else {
+        //Obtengo el objeto Meeting con dicha ID de la base de datos.
+        Meeting.findById(req.params.meetingId)
+            .exec().then(doc => {
+                console.log(doc);
+                if(error){
+                    res.send(404).json({ error: "Error 404 Not Found" });
+                } 
+                    //Compruebo la capacidad del Meeting. 
+                    //Si el nº de miembros es == a la capacidad: Error. 
+                    console.log(doc);          
+                    if(members.length == capacity){
+                        res.send(400).json({error: "Sorry, you can't join this meeting"})
+                }
+                        //Compruebo que no está en pasado la startingDate. 
+                        //Si el startingDate es pasado a Now: Error.
+                        console.log(doc);  
+                        if(startingDate < Date.now){
+                            res.send(400).json({error: "Sorry, this meeting has already started"})
+                        }
+                            //Compruebo que no está unido (el ID del usuario actual no está en el listado de miembros). 
+                            //Si ya está en la lista: Error.
+
+                
+    });
+    
+}});
 
 router.put('/:meetingId', (req, res, next) => {
     // if(req.creatorId != DEBERIA PONER el token )
