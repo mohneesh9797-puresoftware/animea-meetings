@@ -12,7 +12,6 @@ module.exports = {
             // Llamada a la API del microservicio Profile para
             // obtener el listado de IDs de los meetings del
             // usuario.
-            console.log("HOLA SOY " + userId);
             let doc = await profileAxios.get('user/' + userId + '/joinedMeetings');
             console.log(doc);
             let meetingsIds = doc.data;

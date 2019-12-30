@@ -44,6 +44,15 @@ router.get('/', (req, res, next) => {
         query['province'] = province;
     }
 
+    // Comprueba si existe algún parámetro de búsqueda
+    // para obtener en el name y description.´
+    if (req.query.searchQuery && req.query.searchQuery.toString() != "") {
+        searchQuery = req.query.searchQuery.toString();
+
+        query['name'] = new RegExp(searchQuery, "i");
+        query['description'] = new RegExp(searchQuery, "i");
+    }
+
     // Obtiene de la base de datos los meetings filtrados
     // y paginados, ordenados por su startingDate.
     Meeting.find(query).select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
