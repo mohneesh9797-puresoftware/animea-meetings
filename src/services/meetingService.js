@@ -31,6 +31,41 @@ module.exports = {
         }
     },
 
+    createMeeting: async function (meeting) {
+
+        try {
+    
+            // TODO: Comprobar que existe un usuario autenticado y
+            // obtener su ID.
+            let fakeUserId = "1";
+            
+            // Comprobar que la startingDate del meeting es anterior a la endingDate.
+            if (meeting.startingDate > meeting.endingDate) {
+                throw "Error 400: The starting date can't be after the ending date";
+
+            } else {
+                // Asignar la ID del usuario que ha creado la quedada como CreatorID.
+                meeting.creatorId = fakeUserId;
+
+                // Añadir la ID del creador al listado members.
+                meeting.members.push(fakeUserId);
+
+                // Guardar.
+                let createdMeeting = await meeting.save();
+        
+                // Llamada al microservicio de Profile para actualizar
+                // las dependencias y reflejar el abandono del usuario
+                // del meeting.
+                await profileAxios.put('user/' + fakeUserId + '/joinsMeeting/' + meeting._id);
+    
+                return [false, createdMeeting];
+            }
+        
+        } catch (error) {
+            return [true, error];
+        }
+    },
+
     deleteMeeting: async function (meetingId) {
 
         try {
@@ -140,5 +175,62 @@ module.exports = {
         } catch (error) {
             return [true, error];
         }
+    },
+
+    joinMeeting: async function (meetingId) {
+
+        try {
+            var nowDate = new Date(Date.now());
+    
+            // TODO: Comprobar que existe un usuario autenticado y
+            // obtener su ID.
+            let fakeUserId = "1";
+    
+            // Obtiene de la base de datos el meeting al que se quiere unir.
+            let doc = await Meeting.findById(meetingId)
+                .select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
+                .exec();
+            
+            // Comprobar que existe un meeting con la ID proporcionada.
+            if (!doc) {
+                throw "Error 404: We couldn't find any meeting with the given ID."
+    
+            // Comprobar la capacidad del Meeting.
+            } else if (doc.capacity != null && doc.capacity == doc.members.length) {
+                throw "Error 400: Sorry, this meeting is full.";
+    
+            // Comprobar que la startingDate del meeting es futura
+            // y, por tanto, dicho meeting no ha comenzado.
+            } else if (doc.startingDate <= nowDate) {
+                throw "Error 400: You can't join the meeting. It has already started.";
+    
+            // Comprobar que la ID del usuario autenticado se
+            // encuentra en el listado de members del meeting.
+            } else if (doc.members.includes(fakeUserId)) {
+                throw "Error 400: You are already a member!";
+            
+            } else {
+                // Modificar el atributo members, 
+                // añadiendo el ID del usuario actual.
+                var newMembers = doc.members;
+                newMembers.push(fakeUserId);
+    
+                // Actualizar el meeting con su nuevo listado de
+                // members en la base de datos.
+                let updatedMeeting = await Meeting.findByIdAndUpdate(meetingId, {members: newMembers});
+                console.log(updatedMeeting);
+    
+                // Llamada al microservicio de Profile para actualizar
+                // las dependencias y reflejar el abandono del usuario
+                // del meeting.
+                await profileAxios.put('user/' + fakeUserId + '/joinsMeeting/' + meetingId);
+    
+                return [false, updatedMeeting];
+            }
+        
+        } catch (error) {
+            return [true, error];
+        }
     }
+
 }

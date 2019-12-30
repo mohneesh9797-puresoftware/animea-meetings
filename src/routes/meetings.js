@@ -126,41 +126,38 @@ router.get('/user/:userId', (req, res, next) => {
 router.post('/', (req, res, next) => {
     var meeting = new Meeting();
 
-        meeting._id = new mongoose.Types.ObjectId(),
-        meeting.name=req.body.name,
-        meeting.description= req.body.description,
-        meeting.address= req.body.address,
-        meeting.province= req.body.province,
-        meeting.postalCode= req.body.postalCode,
-        meeting.startingDate= req.body.startingDate,
-        meeting.endingDate= req.body.endingDate,
-        meeting.capacity= req.body.capacity,
-        // member
-        meeting.creatorId= req.body.creatorId,
-        meeting.members = req.body.members
-
-    meeting.save(function(err){
-        if(err){
-            res.send(err);
-        }
-        else{
-            res.json({
-                _id: meeting._id,
-                name: meeting.name,
-                description: meeting.description,
-                address: meeting.address,
-                province: meeting.province,
-                postalCode: meeting.postalCode,
-                startingDate: meeting.startingDate,
-                endingDate: meeting.endingDate,
-                capacity: meeting.capacity,
-                creatorId: meeting.creatorId,
-                members: meeting.members
-            })
-        }
-    })
-
+    meeting._id = new mongoose.Types.ObjectId()
+    meeting.name=req.body.name
+    meeting.description= req.body.description
+    meeting.address= req.body.address
+    meeting.province= req.body.province
+    meeting.postalCode= req.body.postalCode
+    meeting.startingDate= req.body.startingDate
+    meeting.endingDate= req.body.endingDate
+    meeting.capacity= req.body.capacity
     
+    meetingService.createMeeting(meeting).then(doc => {
+        if (doc[0]) {
+            console.log(doc[1]);
+            var statusNumber = 500;
+            var errorMessage = "Request failed with status code 500.";
+
+            if (typeof doc[1] === "string") {
+                errorMessage = doc[1];
+
+                if (doc[1].includes("400")) {
+                    statusNumber = 400;
+                }
+            }
+
+            res.status(statusNumber).json({
+                error: errorMessage
+            })
+        } else {
+            console.log(doc[1]);
+            res.status(200).json({message: "Successfully created!" });
+        }
+    });
 });
 
 // ---------- DELETE /meetings/:meetingId ----------
@@ -264,44 +261,55 @@ router.delete('/leave/:meetingId', (req, res, next) => {
 
 router.post('/join/:meetingId', (req, res, next) => {
     //Compruebo que existe un Meeting con el :id indicado
-    //No existe: Error (404)
     if(!mongoose.Types.ObjectId.isValid(req.params.meetingId)) {
         res.status(404).json({ error: "Error 404: We couldn't find any meeting with the given ID." });
 
     } else {
-        //Obtengo el objeto Meeting con dicha ID de la base de datos.
-        Meeting.findById(req.params.meetingId)
-            .exec().then(doc => {
-                console.log(doc);
-                if (doc) {
-                    res.status(200).json(doc);
-                } else {
-                    res.send(404).json({ error: "Error 404 Not Found" });
-                } 
-                    //Compruebo la capacidad del Meeting. 
-                    //Si el nº de miembros es == a la capacidad: Error. 
-                    console.log(doc);          
-                    if(doc.members == doc.capacity){
-                        res.sendStatus(400).json({error: "Sorry, you can't join this meeting"})
-                }
-                        //Compruebo que no está en pasado la startingDate. 
-                        //Si el startingDate es pasado a Now: Error.
-                        console.log(doc);  
-                        if(doc.startingDate < Date.now){
-                            res.send(400).json({error: "Sorry, this meeting has already started"})
-                        }
-                            //Compruebo que no está unido (el ID del usuario actual no está en el listado de miembros). 
-                            //Si ya está en la lista: Error.
+        var meetingId = req.params.meetingId;
+        meetingService.joinMeeting(meetingId).then(doc => {
 
-                
-    });
-    
-}});
+            // Comprobar si se ha producido un error (doc[0] = true) y
+            // enviar el código y mensaje adecuados.
+            if (doc[0]) {
+                console.log(doc[1]);
+                var statusNumber = 500;
+                var errorMessage = "Request failed with status code 500.";
+
+                if (typeof doc[1] === "string") {
+                    errorMessage = doc[1];
+
+                    if (doc[1].includes("400")) {
+                        statusNumber = 400;
+                    } else if (doc[1].includes("404")) {
+                        statusNumber = 404;
+                    }
+                } else if (doc[1].message.includes("400")) {
+                    statusNumber = 400;
+                    errorMessage = "Error 400: The meeting is invalid or user already joined it.";
+                }
+
+                res.status(statusNumber).json({
+                    error: errorMessage
+                })
+            } else {
+                console.log(doc[1]);
+                res.status(200).json({message: "Successfully joined!" });
+            }
+        });
+    }
+});
 
 router.put('/:meetingId', (req, res, next) => {
-    // if(req.creatorId != DEBERIA PONER el token )
+    var fakeUserId = "1";
+    if(req.body.startingDate > req.body.endingDate) {
+        res.status(400).json({ error:"Error 400: The starting date can't be after the ending date"});
+        } else if (req.body.capacity < req.body.members) {
+            res.status(400).json({ error:"Error 400: Capacity can't be less than the current number of members"});
+        }
     Meeting.findById(req.params.meetingId, function(error, meeting){
         if(error){
+            res.send(error);
+        } else if (req.creatorId != fakeUserId) {
             res.send(error);
         }
         meeting.name = req.body.name;
