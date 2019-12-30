@@ -1,13 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const axios = require('axios');
 
 const Meeting = require('../models/meeting')
 const { Provinces } = require('../models/meeting');
-const profileAxios = axios.create({
-    baseURL: 'http://localhost:3001/api/'
-})
 const meetingService = require('../services/meetingService');
 
 const provincesValues = Object.values(Provinces);
