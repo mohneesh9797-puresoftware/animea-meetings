@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-const mongoose = require('mongoose');
 const database = require('../db');
 
 const app = express();
@@ -26,10 +25,8 @@ app.use((req, res, next) => {
 
 // Routes which should handle requests
 const meetingsRoutes = require('../src/routes/meetings');
-const usersRoutes = require('../src/routes/users');
 
-app.use('/meetings', meetingsRoutes);
-app.use('/users', usersRoutes);
+app.use('/api/v1/meetings', meetingsRoutes);
 
 // Middleware to show logs of every call
 app.use(morgan('dev'));
