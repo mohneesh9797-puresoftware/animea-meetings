@@ -3,6 +3,11 @@ const axios = require('axios');
 const profileAxios = axios.create({
     baseURL: 'http://localhost:3001/api/'
 });
+
+const authAxios = axios.create({
+    baseURL: 'http://localhost:3002/api'
+});
+
 const Meeting = require('../models/meeting');
 
 module.exports = {
@@ -31,35 +36,48 @@ module.exports = {
         }
     },
 
-    createMeeting: async function (meeting) {
+    createMeeting: async function (userToken, meeting) {
 
         try {
-    
-            // TODO: Comprobar que existe un usuario autenticado y
-            // obtener su ID.
-            let fakeUserId = "1";
+            // Comprobar que existe un usuario autenticado
+            if (userToken == null) {
+                throw "Error 401: You must be authenticated to create a meeting."    
             
             // Comprobar que la startingDate del meeting es anterior a la endingDate.
-            if (meeting.startingDate > meeting.endingDate) {
+            } else if (meeting.startingDate > meeting.endingDate) {
                 throw "Error 400: The starting date can't be after the ending date";
 
             } else {
-                // Asignar la ID del usuario que ha creado la quedada como CreatorID.
-                meeting.creatorId = fakeUserId;
 
-                // Añadir la ID del creador al listado members.
-                meeting.members.push(fakeUserId);
+                // Obtener la información del usuario, incluyendo la ID,
+                // a partir de su token.
+                let userInfo = await authAxios.get('auth/me', {headers: {'x-access-token': userToken}});
+                
+                // Comprobar que existe un usuario con el token recibido.
+                if(!userInfo) {
+                    throw "Error 401: No user matches the given token"
 
-                // Guardar.
-                let createdMeeting = await meeting.save();
-                console.log(createdMeeting);
-        
-                // Llamada al microservicio de Profile para actualizar
-                // las dependencias y reflejar la unión del usuario
-                // al meeting.
-                await profileAxios.put('user/' + fakeUserId + '/joinsMeeting/' + meeting._id);
-    
-                return [false, createdMeeting];
+                } else {
+                    // Obtener la ID del usuario autenticado.
+                    var userId = userInfo.data._id;
+
+                    // Asignar la ID del usuario que ha creado la quedada como CreatorID.
+                    meeting.creatorId = userId;
+
+                    // Añadir la ID del creador al listado members.
+                    meeting.members.push(userId);
+
+                    // Guardar.
+                    let createdMeeting = await meeting.save();
+                    console.log(createdMeeting);
+            
+                    // Llamada al microservicio de Profile para actualizar
+                    // las dependencias y reflejar la unión del usuario
+                    // al meeting.
+                    await profileAxios.put('user/' + userId + '/joinsMeeting/' + meeting._id);
+
+                    return [false, createdMeeting];
+                }
             }
         
         } catch (error) {

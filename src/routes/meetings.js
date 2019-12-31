@@ -148,6 +148,9 @@ router.get('/user/:userId', (req, res, next) => {
 
 router.post('/', (req, res, next) => {
 
+    // Obtener el token del usuario autenticado
+    var userToken = req.header('x-access-token');
+
     // Creamos un Meeting vacío con su constructor y
     // le asignamos una ID.
     var meeting = new Meeting();
@@ -167,7 +170,7 @@ router.post('/', (req, res, next) => {
     // Llamada al método asíncrono principal que se encarga
     // de crear el meeting y actualizar las dependencias
     // en el microservicio Profile
-    meetingService.createMeeting(meeting).then(doc => {
+    meetingService.createMeeting(userToken, meeting).then(doc => {
 
         // Comprobar si se ha producido un error (doc[0] = true) y
         // enviar el código y mensaje adecuados.
