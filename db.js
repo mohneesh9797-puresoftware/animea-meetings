@@ -1,13 +1,10 @@
 const mongoose = require('mongoose');
+const DB_URL = (process.env.MONGO_URL || 'mongodb+srv://admin:admin@animea-meetings-tdrau.mongodb.net/test?retryWrites=true&w=majority')
 
-const USER = 'admin';
-const PASSWORD = 'admin';
-const SERVER = 'animea-meetings-tdrau.mongodb.net';
-const DATABASE = 'test'
-const OPTIONS = 'retryWrites=true&w=majority';
-
-function connect() {
-    mongoose.connect(`mongodb+srv://${USER}:${PASSWORD}@${SERVER}/${DATABASE}?${OPTIONS}`, {useNewUrlParser: true, useUnifiedTopology: true});
+const dbConnect = function() {
+    const db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error: '));
+    return mongoose.connect(DB_URL, {useNewUrlParser: true, useUnifiedTopology: true});
 }
 
-module.exports.connect = connect;
+module.exports = dbConnect;
