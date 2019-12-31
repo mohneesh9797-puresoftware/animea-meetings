@@ -3,13 +3,9 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const morgan = require('morgan');
 
-const database = require('./db');
-
 const BASE_API_PATH = "/api/v1";
 
 const app = express();
-
-database.connect();
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
