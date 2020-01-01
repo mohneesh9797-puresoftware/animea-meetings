@@ -234,6 +234,7 @@ router.post('/join/:meetingId', (req, res, next) => {
             if (typeof doc[1] === "string") {
                 statusNumber = Number(doc[1].substring(6, 9));
                 errorMessage = doc[1];
+
             } else if (doc[1].message.includes("400")) {
                 statusNumber = 400;
                 errorMessage = "Error 400: The meeting is invalid or user already joined it.";
@@ -314,10 +315,13 @@ router.delete('/:meetingId', (req, res, next) => {
     } else {
         var meetingId = req.params.meetingId;
 
+        // Obtener el token del usuario autenticado
+        var userToken = req.header('x-access-token');
+
         // Llamada al método asíncrono principal que se encarga
         // de eliminar el meeting y actualizar las dependencias
         // en el microservicio Profile
-        meetingService.deleteMeeting(meetingId).then(doc => {
+        meetingService.deleteMeeting(userToken, meetingId).then(doc => {
 
             // Comprobar si se ha producido un error (doc[0] = true) y
             // enviar el código y mensaje adecuados.
@@ -327,16 +331,12 @@ router.delete('/:meetingId', (req, res, next) => {
                 var errorMessage = "Error 500: Request failed with status code 500.";
 
                 if (typeof doc[1] === "string") {
+                    statusNumber = Number(doc[1].substring(6, 9));
                     errorMessage = doc[1];
 
-                    if (doc[1].includes("400")) {
-                        statusNumber = 400;
-                    } else if (doc[1].includes("404")) {
-                        statusNumber = 404;
-                    }
                 } else if (doc[1].message.includes("400")) {
                     statusNumber = 400;
-                    errorMessage = "Error 400: You can't delete a meeting that you didn't create.";
+                    errorMessage = "Error 400: You can't leave a meeting that you are not a member of.";
                 }
 
                 res.status(statusNumber).json({
@@ -364,12 +364,15 @@ router.delete('/leave/:meetingId', (req, res, next) => {
         res.status(404).json({ error: "Error 404: We couldn't find any meeting with the given ID." });
 
     } else {
+        // Obtener el token del usuario autenticado
+        var userToken = req.header('x-access-token');
+
         var meetingId = req.params.meetingId;
 
         // Llamada al método asíncrono principal que se encarga
         // de eliminar al usuario del meeting y actualizar los
         // datos en el microservicio Profile
-        meetingService.leaveMeeting(meetingId).then(doc => {
+        meetingService.leaveMeeting(userToken, meetingId).then(doc => {
 
             // Comprobar si se ha producido un error (doc[0] = true) y
             // enviar el código y mensaje adecuados.
@@ -379,13 +382,9 @@ router.delete('/leave/:meetingId', (req, res, next) => {
                 var errorMessage = "Error 500: Request failed with status code 500.";
 
                 if (typeof doc[1] === "string") {
+                    statusNumber = Number(doc[1].substring(6, 9));
                     errorMessage = doc[1];
 
-                    if (doc[1].includes("400")) {
-                        statusNumber = 400;
-                    } else if (doc[1].includes("404")) {
-                        statusNumber = 404;
-                    }
                 } else if (doc[1].message.includes("400")) {
                     statusNumber = 400;
                     errorMessage = "Error 400: You can't leave a meeting that you are not a member of.";
@@ -398,7 +397,7 @@ router.delete('/leave/:meetingId', (req, res, next) => {
                 console.log(doc[1]);
                 res.status(200).json({
                     meeting: doc[1],
-                    message: "Status 200: You successfully leaved the meeting."
+                    message: "Status 200: You successfully left the meeting."
                 });
             }
         });
