@@ -283,11 +283,6 @@ module.exports = {
             } else if (requestBody.startingDate > requestBody.endingDate) {
                 throw "Error 400: The starting date can't be after the ending date";
 
-            // Comprobar que la capacidad del meeting no es menor al número de miembros
-            // ya registrados en el meeting.
-            } else if (requestBody.capacity < requestBody.members.length) {
-                throw "Error 400: Capacity can't be less than the current number of members";
-
             } else {
                 // Obtener la información del usuario, incluyendo la ID,
                 // a partir de su token.
@@ -316,6 +311,11 @@ module.exports = {
                     // actualizar el meeting coincide con su creatorId.
                     } else if (doc.creatorId.toString().localeCompare(userId.toString()) != 0) {
                         throw "Error 400: You can't update a meeting that you didn't create.";
+
+                    // Comprobar que la capacidad del meeting no es menor al número de miembros
+                    // ya registrados en el meeting.
+                    } else if (requestBody.capacity < doc.members.length) {
+                        throw "Error 400: Capacity can't be less than the current number of members";
 
                     } else {
                         // Actualizar el meeting con sus nuevos atributos
