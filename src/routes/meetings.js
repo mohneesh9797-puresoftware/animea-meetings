@@ -154,18 +154,18 @@ router.post('/', (req, res, next) => {
     // Creamos un Meeting vacío con su constructor y
     // le asignamos una ID.
     var meeting = new Meeting();
-    meeting._id = new mongoose.Types.ObjectId()
+    meeting._id = new mongoose.Types.ObjectId();
 
     // Asignamos los valores que se han recibido en el body
     // para cada atributo.
-    meeting.name = req.body.name
-    meeting.description = req.body.description
-    meeting.address = req.body.address
-    meeting.province = req.body.province
-    meeting.postalCode = req.body.postalCode
-    meeting.startingDate = req.body.startingDate
-    meeting.endingDate = req.body.endingDate
-    meeting.capacity = req.body.capacity
+    meeting.name = req.body.name;
+    meeting.description = req.body.description;
+    meeting.address = req.body.address;
+    meeting.province = req.body.province;
+    meeting.postalCode = req.body.postalCode;
+    meeting.startingDate = req.body.startingDate;
+    meeting.endingDate = req.body.endingDate;
+    meeting.capacity = req.body.capacity;
     
     // Llamada al método asíncrono principal que se encarga
     // de crear el meeting y actualizar las dependencias
@@ -180,18 +180,16 @@ router.post('/', (req, res, next) => {
             var errorMessage = "Error 500: Request failed with status code 500.";
 
             if (typeof doc[1] === "string") {
+                statusNumber = Number(doc[1].substring(6, 9));
                 errorMessage = doc[1];
-
-                if (doc[1].includes("400")) {
-                    statusNumber = 400;
-                }
-            } else if (doc[1].message.includes("400")) {
-                statusNumber = 400;
-                errorMessage = "Error 400: The meeting is invalid or user already joined it.";
 
             } else if (doc[1].message.toLowerCase().includes("validation failed")) {
                 statusNumber = 400;
                 errorMessage = "Error 400: " + doc[1].message;
+
+            } else if (doc[1].message.includes("400")) {
+                statusNumber = 400;
+                errorMessage = "Error 400: The meeting is invalid or user already joined it.";
             }
 
             res.status(statusNumber).json({
@@ -218,10 +216,13 @@ router.post('/join/:meetingId', (req, res, next) => {
         res.status(404).json({ error: "Error 404: We couldn't find any meeting with the given ID."});
     }
 
+    // Obtener el token del usuario autenticado
+    var userToken = req.header('x-access-token');
+
     // Llamada al método asíncrono principal que se encarga
     // de añadir al usuario al meeting y actualizar las
     // dependencias en el microservicio Profile.
-    meetingService.joinMeeting(req.params.meetingId).then(doc => {
+    meetingService.joinMeeting(userToken, req.params.meetingId).then(doc => {
 
         // Comprobar si se ha producido un error (doc[0] = true) y
         // enviar el código y mensaje adecuados.
@@ -231,13 +232,8 @@ router.post('/join/:meetingId', (req, res, next) => {
             var errorMessage = "Error 500: Request failed with status code 500.";
 
             if (typeof doc[1] === "string") {
+                statusNumber = Number(doc[1].substring(6, 9));
                 errorMessage = doc[1];
-
-                if (doc[1].includes("400")) {
-                    statusNumber = 400;
-                } else if (doc[1].includes("404")) {
-                    statusNumber = 404;
-                }
             } else if (doc[1].message.includes("400")) {
                 statusNumber = 400;
                 errorMessage = "Error 400: The meeting is invalid or user already joined it.";

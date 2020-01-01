@@ -41,21 +41,22 @@ module.exports = {
         try {
             // Comprobar que existe un usuario autenticado
             if (userToken == null) {
-                throw "Error 401: You must be authenticated to create a meeting."    
+                throw "Error 401: You must be authenticated to create a meeting."; 
             
             // Comprobar que la startingDate del meeting es anterior a la endingDate.
             } else if (meeting.startingDate > meeting.endingDate) {
-                throw "Error 400: The starting date can't be after the ending date";
+                throw "Error 400: The starting date can't be after the ending date.";
 
             } else {
 
                 // Obtener la información del usuario, incluyendo la ID,
                 // a partir de su token.
                 let userInfo = await authAxios.get('auth/me', {headers: {'x-access-token': userToken}});
+                console.log(userInfo);
                 
                 // Comprobar que existe un usuario con el token recibido.
                 if(!userInfo) {
-                    throw "Error 401: No user matches the given token"
+                    throw "Error 401: No user matches the given token.";
 
                 } else {
                     // Obtener la ID del usuario autenticado.
@@ -198,23 +199,24 @@ module.exports = {
         }
     },
 
-    joinMeeting: async function (meetingId) {
+    joinMeeting: async function (userToken, meetingId) {
 
         try {
             var nowDate = new Date(Date.now());
-    
-            // TODO: Comprobar que existe un usuario autenticado y
-            // obtener su ID.
-            let fakeUserId = "1";
     
             // Obtiene de la base de datos el meeting al que se quiere unir.
             let doc = await Meeting.findById(meetingId)
                 .select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
                 .exec();
+            console.log(doc);
+            
+            // Comprobar que existe un usuario autenticado
+            if (userToken == null) {
+                throw "Error 401: You must be authenticated to create a meeting.";
             
             // Comprobar que existe un meeting con la ID proporcionada.
-            if (!doc) {
-                throw "Error 404: We couldn't find any meeting with the given ID."
+            } else if (!doc) {
+                throw "Error 404: We couldn't find any meeting with the given ID.";
     
             // Comprobar la capacidad del Meeting.
             } else if (doc.capacity != null && doc.capacity == doc.members.length) {
@@ -224,29 +226,44 @@ module.exports = {
             // y, por tanto, dicho meeting no ha comenzado.
             } else if (doc.startingDate <= nowDate) {
                 throw "Error 400: You can't join the meeting. It has already started.";
-    
-            // Comprobar que la ID del usuario autenticado se
-            // encuentra en el listado de members del meeting.
-            } else if (doc.members.includes(fakeUserId)) {
-                throw "Error 400: You are already a member!";
             
             } else {
-                // Modificar el atributo members, 
-                // añadiendo el ID del usuario actual.
-                var newMembers = doc.members;
-                newMembers.push(fakeUserId);
-    
-                // Actualizar el meeting con su nuevo listado de
-                // members en la base de datos.
-                let updatedMeeting = await Meeting.findByIdAndUpdate(meetingId, {members: newMembers}, {new: true});
-                console.log(updatedMeeting);
-    
-                // Llamada al microservicio de Profile para actualizar
-                // las dependencias y reflejar la unión del usuario
-                // al meeting.
-                await profileAxios.put('user/' + fakeUserId + '/joinsMeeting/' + meetingId);
-    
-                return [false, updatedMeeting];
+
+                // Obtener la información del usuario, incluyendo la ID,
+                // a partir de su token.
+                let userInfo = await authAxios.get('auth/me', {headers: {'x-access-token': userToken}});
+                console.log(userInfo);
+
+                // Comprobar que existe un usuario con el token recibido.
+                if(!userInfo) {
+                    throw "Error 401: No user matches the given token.";
+                
+                // Comprobar que la ID del usuario autenticado se
+                // encuentra en el listado de members del meeting.
+                } else if (doc.members.includes(userInfo.data._id)) {
+                    throw "Error 400: You are already a member!";
+                
+                } else {
+                    // Obtener la ID del usuario autenticado.
+                    var userId = userInfo.data._id;
+
+                    // Modificar el atributo members, 
+                    // añadiendo el ID del usuario actual.
+                    var newMembers = doc.members;
+                    newMembers.push(userId);
+        
+                    // Actualizar el meeting con su nuevo listado de
+                    // members en la base de datos.
+                    let updatedMeeting = await Meeting.findByIdAndUpdate(meetingId, {members: newMembers}, {new: true});
+                    console.log(updatedMeeting);
+        
+                    // Llamada al microservicio de Profile para actualizar
+                    // las dependencias y reflejar la unión del usuario
+                    // al meeting.
+                    await profileAxios.put('user/' + userId + '/joinsMeeting/' + meetingId);
+        
+                    return [false, updatedMeeting];
+                }
             }
         
         } catch (error) {
