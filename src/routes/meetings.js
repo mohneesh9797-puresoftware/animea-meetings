@@ -263,11 +263,14 @@ router.put('/:meetingId', (req, res, next) => {
         res.status(404).json({ error: "Error 404: We couldn't find any meeting with the given ID."});
     }
 
+    // Obtener el token del usuario autenticado
+    var userToken = req.header('x-access-token');
+
     var requestBody = req.body;
 
     // Llamada al método asíncrono principal que se encarga
     // de actualizar el meeting.
-    meetingService.updateMeeting(requestBody, req.params.meetingId).then(doc => {
+    meetingService.updateMeeting(userToken, requestBody, req.params.meetingId).then(doc => {
 
         // Comprobar si se ha producido un error (doc[0] = true) y
         // enviar el código y mensaje adecuados.
@@ -277,13 +280,8 @@ router.put('/:meetingId', (req, res, next) => {
             var errorMessage = "Error 500: Request failed with status code 500.";
 
             if (typeof doc[1] === "string") {
+                statusNumber = Number(doc[1].substring(6, 9));
                 errorMessage = doc[1];
-
-                if (doc[1].includes("400")) {
-                    statusNumber = 400;
-                } else if (doc[1].includes("404")) {
-                    statusNumber = 404;
-                }
 
             } else if (doc[1].message.toLowerCase().includes("validation failed")) {
                 statusNumber = 400;

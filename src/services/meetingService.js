@@ -212,7 +212,7 @@ module.exports = {
             
             // Comprobar que existe un usuario autenticado
             if (userToken == null) {
-                throw "Error 401: You must be authenticated to create a meeting.";
+                throw "Error 401: You must be authenticated to join a meeting.";
             
             // Comprobar que existe un meeting con la ID proporcionada.
             } else if (!doc) {
@@ -272,51 +272,64 @@ module.exports = {
         }
     },
 
-    updateMeeting: async function (requestBody, meetingId) {
+    updateMeeting: async function (userToken, requestBody, meetingId) {
 
         try {
-    
-            // TODO: Comprobar que existe un usuario autenticado y
-            // obtener su ID.
-            let fakeUserId = "1";
+            // Comprobar que existe un usuario autenticado
+            if (userToken == null) {
+                throw "Error 401: You must be authenticated to update a meeting.";
             
             // Comprobar que la startingDate del meeting es anterior a la endingDate.
-            if (requestBody.startingDate > requestBody.endingDate) {
+            } else if (requestBody.startingDate > requestBody.endingDate) {
                 throw "Error 400: The starting date can't be after the ending date";
 
             // Comprobar que la capacidad del meeting no es menor al número de miembros
             // ya registrados en el meeting.
-            } else if (requestBody.capacity < requestBody.members) {
+            } else if (requestBody.capacity < requestBody.members.length) {
                 throw "Error 400: Capacity can't be less than the current number of members";
 
             } else {
-                // Obtiene de la base de datos el meeting que se quiere actualizar.
-                let doc = await Meeting.findById(meetingId)
-                    .select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
-                    .exec();
-                console.log(doc);
+                // Obtener la información del usuario, incluyendo la ID,
+                // a partir de su token.
+                let userInfo = await authAxios.get('auth/me', {headers: {'x-access-token': userToken}});
+                console.log(userInfo);
 
-                // Comprobar que existe un meeting con la ID proporcionada.
-                if (!doc) {
-                    throw "Error 404: We couldn't find any meeting with the given ID."
-
-                // Comprobar que la ID del usuario que está intentando
-                // actualizar el meeting coincide con su creatorId.
-                } else if (doc.creatorId.toString().localeCompare(fakeUserId) != 0) {
-                    throw "Error 400: You can't update a meeting that you didn't create.";
+                // Comprobar que existe un usuario con el token recibido.
+                if(!userInfo) {
+                    throw "Error 401: No user matches the given token.";
 
                 } else {
-                    // Actualizar el meeting con sus nuevos atributos
-                    // en la base de datos.
-                    let updatedMeeting = await Meeting.findByIdAndUpdate(meetingId, 
-                        {name: requestBody.name, description: requestBody.description,
+                    // Obtener la ID del usuario autenticado.
+                    var userId = userInfo.data._id;
+
+                    // Obtiene de la base de datos el meeting que se quiere actualizar.
+                    let doc = await Meeting.findById(meetingId)
+                        .select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
+                        .exec();
+                    console.log(doc);
+
+                    // Comprobar que existe un meeting con la ID proporcionada.
+                    if (!doc) {
+                        throw "Error 404: We couldn't find any meeting with the given ID."
+
+                    // Comprobar que la ID del usuario que está intentando
+                    // actualizar el meeting coincide con su creatorId.
+                    } else if (doc.creatorId.toString().localeCompare(userId.toString()) != 0) {
+                        throw "Error 400: You can't update a meeting that you didn't create.";
+
+                    } else {
+                        // Actualizar el meeting con sus nuevos atributos
+                        // en la base de datos.
+                        let updatedMeeting = await Meeting.findByIdAndUpdate(meetingId, 
+                            {name: requestBody.name, description: requestBody.description,
                             address: requestBody.address, province: requestBody.province,
                             postalCode: requestBody.postalCode, startingDate: requestBody.startingDate,
                             endingDate: requestBody.endingDate, capacity: requestBody.capacity}, 
-                        {new: true, runValidators: true});
-                    console.log(updatedMeeting);
+                            {new: true, runValidators: true});
+                        console.log(updatedMeeting);
 
-                    return [false, updatedMeeting];
+                        return [false, updatedMeeting];
+                    }
                 }
             }
         
