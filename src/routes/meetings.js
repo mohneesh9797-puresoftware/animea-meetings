@@ -17,7 +17,7 @@ const provincesValues = Object.values(Provinces);
 router.get('/', (req, res, next) => {
 
     var page = 0;
-    var limit = 5;
+    var limit = 10;
     var province = '';
 
     var query = {};
