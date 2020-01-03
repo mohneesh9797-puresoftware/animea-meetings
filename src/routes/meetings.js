@@ -41,12 +41,11 @@ router.get('/', (req, res, next) => {
     }
 
     // Comprueba si existe algún parámetro de búsqueda
-    // para obtener en el name y description.´
+    // para obtener en el name.
     if (req.query.searchQuery && req.query.searchQuery.toString() != "") {
         searchQuery = req.query.searchQuery.toString();
 
         query['name'] = new RegExp(searchQuery, "i");
-        query['description'] = new RegExp(searchQuery, "i");
     }
 
     // Obtiene de la base de datos los meetings filtrados
