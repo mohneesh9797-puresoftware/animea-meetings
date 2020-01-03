@@ -97,11 +97,11 @@ const meetingSchema = new mongoose.Schema({
         max: 500
     },
     creatorId: {
-        type: Number,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     },
     members: {
-        type: [Number],
+        type: [mongoose.Schema.Types.ObjectId],
         required: true
     }
 });
