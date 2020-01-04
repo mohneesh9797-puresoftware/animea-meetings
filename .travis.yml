@@ -1,22 +1,26 @@
-sudo: required
-language: node_js
-node_js:
-    - "9"
-services:
-    - docker
-    - mongodb
 before_install:
-    - wget -qO- https://toolbelt.heroku.com/install.sh | sh
-install:
-    - npm install
-script:
-    - npm test
-    - docker build -t meetings .
-deploy:
-    provider: script
-    skip_cleanup: true
-    script:
-        heroku container:login
-        heroku container:push web -a $HEROKU_APP_NAME;
-        heroku container:release web -a $HEROKU_APP_NAME;
-    branch: master
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+jobs:
+  include:
+    # - stage: run tests
+    #   arch: amd64
+    #   language: node_js
+    #   node_js:
+    #   - 'stable'
+      # install: npm install
+      # script:
+      # - npm test
+    - stage: build docker image
+      if: branch = feature/CI
+      arch: arm64
+      language: bash
+      script:
+      - docker build -t animea-meetings .
+      - docker tag animea-meetings animea/animea-meetings:latest
+      - docker push animea/animea-meetings:latest
+    - stage: update services in server
+      if: branch = feature/CI
+      arch: amd64
+      language: bash
+      script:
+      - curl http://$SERVER_IP:$API_PORT/update

@@ -1,4 +1,4 @@
-FROM node:9-alpine
+FROM arm32v7/node:10-alpine
 
 WORKDIR /app
 
@@ -9,6 +9,6 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 3000
+EXPOSE $MEETINGS_PORT
 
 CMD npm start
