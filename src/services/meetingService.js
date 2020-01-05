@@ -325,6 +325,8 @@ module.exports = {
                     // Obtener la ID del usuario autenticado.
                     var userId = userInfo.data._id;
 
+                    var nowDate = new Date(Date.now());
+
                     // Obtiene de la base de datos el meeting que se quiere actualizar.
                     let doc = await Meeting.findById(meetingId)
                         .select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
@@ -344,6 +346,11 @@ module.exports = {
                     // ya registrados en el meeting.
                     } else if (requestBody.capacity < doc.members.length) {
                         throw "Error 400: Capacity can't be less than the current number of members";
+
+                    // Comprobar que la startingDate del meeting es futura
+                    // y, por tanto, dicho meeting no ha comenzado.
+                    } else if (doc.startingDate <= nowDate) {
+                        throw "Error 400: You can't edit the meeting. It has already started.";
 
                     } else {
                         // Actualizar el meeting con sus nuevos atributos
