@@ -5,7 +5,7 @@ const profileAxios = axios.create({
 });
 
 const authAxios = axios.create({
-    baseURL: 'http://localhost:3002/api'
+    baseURL: 'http://localhost:3002/api/v1'
 });
 
 const Meeting = require('../models/meeting');
@@ -236,6 +236,8 @@ module.exports = {
                 .exec();
             console.log(doc);
             
+            console.log("-----------------------------")
+            console.log(userToken)
             // Comprobar que existe un usuario autenticado
             if (userToken == null) {
                 throw "Error 401: You must be authenticated to join a meeting.";
