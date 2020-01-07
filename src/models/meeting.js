@@ -80,7 +80,8 @@ const meetingSchema = new mongoose.Schema({
     postalCode: {
         type: String,
         required: true,
-        maxlength: 5
+        maxlength: 5,
+        minlength: 5
     },
     startingDate: {
         type: Date,
