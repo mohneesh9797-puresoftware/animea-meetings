@@ -13,11 +13,10 @@ script:
     - npm test
     - docker build -t meetings .
 deploy:
-    provider: heroku
-    api_key: $HEROKU_API_KEY
-    skip_cleanup: true
-    script:
-        heroku container:login
-        heroku container:push web -a $HEROKU_APP_NAME;
-        heroku container:release web -a $HEROKU_APP_NAME;
-    branch: master
+  provider: script
+  skip_cleanup: true
+  script:
+    heroku container:login;
+    heroku container:push web -a $HEROKU_APP_NAME;
+    heroku container:release web -a $HEROKU_APP_NAME;
+  branch: master
