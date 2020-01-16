@@ -1,11 +1,11 @@
 const axios = require('axios');
 
 const profileAxios = axios.create({
-    baseURL: 'http://localhost:3001/api/'
+    baseURL: 'https://animea-profile.herokuapp.com/api/v1/'
 });
 
 const authAxios = axios.create({
-    baseURL: 'http://localhost:3002/api/v1'
+    baseURL: 'https://animea-auth.herokuapp.com/api/v1/'
 });
 
 const Meeting = require('../models/meeting');
@@ -44,7 +44,7 @@ module.exports = {
                 throw "Error 401: You must be authenticated to create a meeting."; 
             
             // Comprobar que la startingDate del meeting es anterior a la endingDate.
-            } else if (meeting.startingDate > meeting.endingDate) {
+            } else if (meeting.endingDate && meeting.startingDate > meeting.endingDate) {
                 throw "Error 400: The starting date can't be after the ending date.";
 
             } else {
@@ -308,7 +308,7 @@ module.exports = {
                 throw "Error 401: You must be authenticated to update a meeting.";
             
             // Comprobar que la startingDate del meeting es anterior a la endingDate.
-            } else if (requestBody.startingDate > requestBody.endingDate) {
+            } else if (requestBody.endingDate && requestBody.startingDate > requestBody.endingDate) {
                 throw "Error 400: The starting date can't be after the ending date";
 
             } else {
