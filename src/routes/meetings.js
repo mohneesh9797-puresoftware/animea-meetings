@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const cache = require('memory-cache');
 
 const Meeting = require('../models/meeting')
 const { Provinces } = require('../models/meeting');
@@ -48,25 +49,38 @@ router.get('/', (req, res, next) => {
         query['name'] = new RegExp(searchQuery, "i");
     }
 
-    // Obtiene de la base de datos los meetings filtrados
-    // y paginados, ordenados por su startingDate.
-    Meeting.find(query).select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
-        .sort({startingDate: 'desc'})
-        .skip(page * limit)
-        .limit(limit)
-        .exec().then(docs => {
-            console.log(docs);
-            res.status(200).json({
-                meetings: docs,
-                message: "Status 200: Meetings retrieved successfully."
-            });
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).json({
-                error: "Error 500: Request failed with status code 500."
+    var cachedBody = cache.get(req.originalUrl);
+
+    if (!cachedBody) {
+
+        // Obtiene de la base de datos los meetings filtrados
+        // y paginados, ordenados por su startingDate.
+        Meeting.find(query).select("_id name description address province postalCode startingDate endingDate capacity creatorId members")
+            .sort({startingDate: 'desc'})
+            .skip(page * limit)
+            .limit(limit)
+            .exec().then(docs => {
+                console.log(docs);
+                cache.put(req.originalUrl, docs, 86400000)
+                res.status(200).json({
+                    meetings: docs,
+                    message: "Status 200: Meetings retrieved successfully."
+                });
             })
+            .catch(err => {
+                console.log(err);
+                res.status(500).json({
+                    error: "Error 500: Request failed with status code 500."
+                })
+            });
+
+    } else {
+        console.log("Using cache...")
+        res.status(200).json({
+            meetings: cachedBody,
+            message: "Status 200: Meetings retrieved successfully."
         });
+    }
 });
 
 
