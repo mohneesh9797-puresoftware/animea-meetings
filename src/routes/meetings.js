@@ -123,34 +123,46 @@ router.get('/user/:userId', (req, res, next) => {
 
     var userId = req.params.userId.toString();
 
-    // Llamada al método asíncrono principal que se encarga
-    // de hacer una llamada al microservicio Profile para
-    // posteriormente obtener los meetings de un usuario.
-    meetingService.getMeetingsFromUser(userId).then(doc => {
+    var cachedBody = cache.get(req.originalUrl);
 
-        // Comprobar si se ha producido un error (doc[0] = true) y
-        // enviar el código y mensaje adecuados.
-        if (doc[0]) {
-            console.log(doc[1]);
-            var statusNumber = 500;
-            var errorMessage = "Error 500: Request failed with status code 500.";
+    if (!cachedBody) {
 
-            if (doc[1].message.includes('404')) {
-                statusNumber = 404;
-                errorMessage = "Error 404: We couldn't find any user with the given ID.";
+        // Llamada al método asíncrono principal que se encarga
+        // de hacer una llamada al microservicio Profile para
+        // posteriormente obtener los meetings de un usuario.
+        meetingService.getMeetingsFromUser(userId).then(doc => {
+
+            // Comprobar si se ha producido un error (doc[0] = true) y
+            // enviar el código y mensaje adecuados.
+            if (doc[0]) {
+                console.log(doc[1]);
+                var statusNumber = 500;
+                var errorMessage = "Error 500: Request failed with status code 500.";
+
+                if (doc[1].message.includes('404')) {
+                    statusNumber = 404;
+                    errorMessage = "Error 404: We couldn't find any user with the given ID.";
+                }
+
+                res.status(statusNumber).json({
+                    error: errorMessage
+                })
+            } else {
+                console.log(doc[1]);
+                cache.put(req.originalUrl, doc[1], 86400000)
+                res.status(200).json({
+                    meetings: doc[1],
+                    message: "Status 200: User meetings retrieved successfully."
+                });
             }
-
-            res.status(statusNumber).json({
-                error: errorMessage
-            })
-        } else {
-            console.log(doc[1]);
-            res.status(200).json({
-                meetings: doc[1],
-                message: "Status 200: User meetings retrieved successfully."
-            });
-        }
-    });
+        });
+    } else {
+        console.log("Using cache...")
+        res.status(200).json({
+            meetings: cachedBody,
+            message: "Status 200: User meetings retrieved successfully."
+        });
+    }
 });
 
 // ----------------- POST /meetings ----------------
