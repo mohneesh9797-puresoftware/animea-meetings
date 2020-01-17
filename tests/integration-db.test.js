@@ -8,12 +8,6 @@ describe("Meetings DB connection", () => {
         return dbConnect();
     });
 
-    beforeEach((done) => {
-        Meeting.deleteMany({}, (err) => {
-            done();
-        });
-    });
-
     it("Writes a meeting in the DB", (done) => {
         const meeting = new Meeting({
             "members": [
@@ -32,11 +26,53 @@ describe("Meetings DB connection", () => {
             "creatorId": new mongoose.Types.ObjectId("5df9cfb41c9d44000047b037"),
             "__v": 0
         });
-
         meeting.save((err, meeting) => {
             expect(err).toBeNull();
-            Meeting.find({}, (err, contacts) => {
-                expect(contacts).toBeArrayOfSize(1);
+            Meeting.find({}, (err, meetings) => {
+                expect(err).toBeNull();
+                expect(meetings.length).toEqual(1);
+                done();
+            })
+        })
+    });
+
+    it("Updates a meeting in the DB", (done) => {
+        const meetingId = {"_id": new mongoose.Types.ObjectId("5e07ba481c9d4400001ced4f")};
+        const updatedMeeting = new Meeting({
+            "members": [
+                new mongoose.Types.ObjectId("5df9cfb41c9d44000047b034"),
+                new mongoose.Types.ObjectId("5df9cfb41c9d44000047b037"),
+                new mongoose.Types.ObjectId("5df9cfb41c9d44000047b035")],
+            "_id": new mongoose.Types.ObjectId("5e07ba481c9d4400001ced4f"),
+            "name": "Updated name",
+            "description": "Updated description",
+            "address": "Calle Zabalbide, 27",
+            "province": "vizcaya",
+            "postalCode": "48006",
+            "startingDate": new Date("2020-07-27T15:35:00.000Z"),
+            "endingDate": new Date("2020-07-27T23:00:00.000Z"),
+            "capacity": 25,
+            "creatorId": new mongoose.Types.ObjectId("5df9cfb41c9d44000047b037"),
+            "__v": 0
+        });
+        Meeting.findOneAndUpdate(meetingId, updatedMeeting, function () {
+            Meeting.find({}, (err, meetings) => {
+                expect(err).toBeNull();
+                expect(meetings.length).toEqual(1);
+                expect(meetings[0].name).toEqual("Updated name");
+                expect(meetings[0].description).toEqual("Updated description");
+                done();
+          });
+        });
+    });
+    
+    it("Deletes a meeting from the DB", (done) => {
+        const meetingId = {"_id": new mongoose.Types.ObjectId("5e07ba481c9d4400001ced4f")};
+        Meeting.findOneAndRemove(meetingId, (err) => {
+            expect(err).toBeNull();
+            Meeting.find({}, (err, meetings) => {
+                expect(err).toBeNull();
+                expect(meetings.length).toEqual(0);
                 done();
             });
         });
