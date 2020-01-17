@@ -1,0 +1,917 @@
+{
+	"info": {
+		"_postman_id": "0d3bdaaf-20bd-44a3-b1e4-110ffb07f427",
+		"name": "Meetings API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET /meetings",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://animea-gateway.herokuapp.com/meetings/api/v1/meetings/",
+					"protocol": "https",
+					"host": [
+						"animea-gateway",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"meetings",
+						"api",
+						"v1",
+						"meetings",
+						""
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GET /meetings",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://animea-gateway.herokuapp.com/meetings/api/v1/meetings/?limit=50",
+							"protocol": "https",
+							"host": [
+								"animea-gateway",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"meetings",
+								"api",
+								"v1",
+								"meetings",
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Número de página de la paginación",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "50",
+									"description": "Elementos por página"
+								},
+								{
+									"key": "province",
+									"value": "sevilla",
+									"description": "Filtrado por provincia",
+									"disabled": true
+								},
+								{
+									"key": "searchQuery",
+									"value": "sakura",
+									"description": "Parámetro de búsqueda en títulos y descripciones",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Server",
+							"value": "Cowboy"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "6228"
+						},
+						{
+							"key": "Etag",
+							"value": "W/\"1854-9A389Nb4XbzFAJUupLFyf2cg97g\""
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 16 Jan 2020 11:26:00 GMT"
+						},
+						{
+							"key": "Via",
+							"value": "1.1 vegur, 1.1 vegur"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"meetings\": [\n        {\n            \"members\": [\n                \"5e145b225591df48f0316f03\",\n                \"5e145b465591df48f0316f06\",\n                \"5e145b4f5591df48f0316f07\"\n            ],\n            \"_id\": \"5e07bba01c9d4400001ced51\",\n            \"name\": \"One Punch Man come alive\",\n            \"description\": \"One-Punch Man tells the story of Saitama, a superhero who can defeat any opponent with a single punch but seeks to find a worthy opponent after growing bored by a lack of challenge in his fight against evil.\",\n            \"address\": \"Carrer de Mallorca, 18\",\n            \"province\": \"tarragona\",\n            \"postalCode\": \"43001\",\n            \"startingDate\": \"2020-11-03T22:35:00.000Z\",\n            \"endingDate\": \"2020-11-04T04:30:00.000Z\",\n            \"capacity\": 80,\n            \"creatorId\": \"5e145b225591df48f0316f03\"\n        },\n        {\n            \"members\": [\n                \"5e145acd5591df48f0316f02\",\n                \"5e145b225591df48f0316f03\",\n                \"5e145b465591df48f0316f06\"\n            ],\n            \"_id\": \"5e07ba481c9d4400001ced4f\",\n            \"name\": \"Fullmetal Alchemist: Brotherhood come alive\",\n            \"description\": \"Brothers Edward and Alphonse Elric are raised by their mother Trisha Elric in the remote village of Resembool in the country of Amestris. Their father Hohenheim, a noted and very gifted alchemist, abandoned his family while the boys were still young, and while in Trisha's care they began to show an affinity for alchemy.\",\n            \"address\": \"Calle Zabalbide, 27\",\n            \"province\": \"vizcaya\",\n            \"postalCode\": \"48006\",\n            \"startingDate\": \"2020-07-27T15:35:00.000Z\",\n            \"endingDate\": \"2020-07-27T23:00:00.000Z\",\n            \"capacity\": 25,\n            \"creatorId\": \"5e145b225591df48f0316f03\"\n        },\n        {\n            \"members\": [\n                \"5e145acd5591df48f0316f02\",\n                \"5e145b225591df48f0316f03\",\n                \"5e145b3c5591df48f0316f05\"\n            ],\n            \"_id\": \"5e07c2601c9d4400001ced59\",\n            \"name\": \"Mirai Nikki come alive\",\n            \"description\": \"The plot depicts the Diary Game, a deadly battle royal between 12 different individuals who are given \\\"Future Diaries\\\", special diaries that can predict the future, by Deus Ex Machina, the God of Time and Space, with the last survivor becoming his heir.\",\n            \"address\": \"Calle Diego Laínez, 8I\",\n            \"province\": \"burgos\",\n            \"postalCode\": \"09005\",\n            \"startingDate\": \"2020-07-16T19:15:00.000Z\",\n            \"capacity\": 5,\n            \"creatorId\": \"5e145acd5591df48f0316f02\"\n        },\n        {\n            \"members\": [\n                \"5e145acd5591df48f0316f02\",\n                \"5e145b3c5591df48f0316f05\",\n                \"5e145b465591df48f0316f06\"\n            ],\n            \"_id\": \"5e07be8b1c9d4400001ced56\",\n            \"name\": \"Naruto come alive\",\n            \"description\": \"The series tells the story of Naruto Uzumaki, a young ninja who seeks to gain recognition from his peers and also dreams of becoming the Hokage, the leader of his village.\",\n            \"address\": \"Calle de Manuel Lasala, 16\",\n            \"province\": \"zaragoza\",\n            \"postalCode\": \"50006\",\n            \"startingDate\": \"2020-06-26T18:30:00.000Z\",\n            \"endingDate\": \"2020-06-27T02:30:00.000Z\",\n            \"capacity\": 4,\n            \"creatorId\": \"5e145acd5591df48f0316f02\"\n        },\n        {\n            \"members\": [\n                \"5e145b225591df48f0316f03\",\n                \"5e145b3c5591df48f0316f05\"\n            ],\n            \"_id\": \"5e07b8e31c9d4400001ced4e\",\n            \"name\": \"Sword Art Online come alive\",\n            \"description\": \"The series takes place in the near future and focuses on protagonist Kazuto \\\"Kirito\\\" Kirigaya and Asuna Yuuki as they play through various virtual reality MMORPG worlds.\",\n            \"address\": \"Calle Francisco Sarmiento, 13\",\n            \"province\": \"burgos\",\n            \"postalCode\": \"09006\",\n            \"startingDate\": \"2020-06-13T19:05:00.000Z\",\n            \"endingDate\": \"2020-06-13T23:00:00.000Z\",\n            \"capacity\": 40,\n            \"creatorId\": \"5e145b3c5591df48f0316f05\"\n        },\n        {\n            \"members\": [\n                \"5e145acd5591df48f0316f02\",\n                \"5e145b225591df48f0316f03\",\n                \"5e145b3c5591df48f0316f05\"\n            ],\n            \"_id\": \"5e07bc821c9d4400001ced52\",\n            \"name\": \"Tokyo Ghoul come alive\",\n            \"description\": \"Tokyo Ghoul is set in an alternate reality where ghouls, creatures that look like normal people but can only survive by eating human flesh, live amongst the human population in secrecy, hiding their true nature in order to evade pursuit from the authorities.\",\n            \"address\": \"Calle Andrés Bernáldez, 1\",\n            \"province\": \"sevilla\",\n            \"postalCode\": \"41005\",\n            \"startingDate\": \"2020-05-29T16:45:00.000Z\",\n            \"endingDate\": \"2020-05-29T19:45:00.000Z\",\n            \"capacity\": 10,\n            \"creatorId\": \"5e145acd5591df48f0316f02\"\n        },\n        {\n            \"members\": [\n                \"5e145acd5591df48f0316f02\",\n                \"5e145b225591df48f0316f03\",\n                \"5e145b3c5591df48f0316f05\",\n                \"5e145b465591df48f0316f06\",\n                \"5e145b4f5591df48f0316f07\"\n            ],\n            \"_id\": \"5e07ad761c9d4400001ced4a\",\n            \"name\": \"Death Note come alive\",\n            \"description\": \"The series centers around a high school student who discovers a supernatural notebook that allows him to kill anyone by writing the victim's name while picturing their face.\",\n            \"address\": \"Calle María de Molina, 13\",\n            \"province\": \"cordoba\",\n            \"postalCode\": \"14011\",\n            \"startingDate\": \"2020-05-20T17:30:00.000Z\",\n            \"endingDate\": \"2020-05-21T17:30:00.000Z\",\n            \"capacity\": 20,\n            \"creatorId\": \"5e145b225591df48f0316f03\"\n        },\n        {\n            \"members\": [\n                \"5e145acd5591df48f0316f02\",\n                \"5e145b3c5591df48f0316f05\",\n                \"5e145b465591df48f0316f06\"\n            ],\n            \"_id\": \"5e07bd431c9d4400001ced53\",\n            \"name\": \"Steins;Gate come alive\",\n            \"description\": \"The story follows a group of students as they discover and develop technology that gives them the means to change the past.\",\n            \"address\": \"Calle Urbión, 1\",\n            \"province\": \"sevilla\",\n            \"postalCode\": \"41005\",\n            \"startingDate\": \"2020-05-14T10:30:00.000Z\",\n            \"endingDate\": \"2020-05-14T14:45:00.000Z\",\n            \"capacity\": 10,\n            \"creatorId\": \"5e145acd5591df48f0316f02\"\n        },\n        {\n            \"members\": [\n                \"5e145b3c5591df48f0316f05\",\n                \"5e145b465591df48f0316f06\",\n                \"5e145b4f5591df48f0316f07\"\n            ],\n            \"_id\": \"5e07c6031c9d440000f35b44\",\n            \"name\": \"Noragami come alive\",\n            \"description\": \"Hiyori Iki is a normal middle school student until she was involved in a bus accident while trying to protect a stranger. This incident causes her soul to frequently slip out of her body, and she becomes aware of the existence of two parallel worlds: the Near Shore, where regular humans and creatures reside, and the Far Shore, where demons and human souls linger.\",\n            \"address\": \"Carrer Vallcalent, 32\",\n            \"province\": \"lerida\",\n            \"postalCode\": \"25006\",\n            \"startingDate\": \"2020-04-13T16:00:00.000Z\",\n            \"endingDate\": \"2020-04-14T02:30:00.000Z\",\n            \"creatorId\": \"5e145b3c5591df48f0316f05\"\n        },\n        {\n            \"members\": [\n                \"5e145b225591df48f0316f03\",\n                \"5e145b4f5591df48f0316f07\"\n            ],\n            \"_id\": \"5e07c3851c9d4400001ced5a\",\n            \"name\": \"Toradora! come alive\",\n            \"description\": \"Over the course of the series, Ryuji and Taiga try to set up romantic situations to help each other get to know their friends, but many of the situations backfire. Their classmates observe that they are spending a lot of time with each other, leading to rumors that they might be a couple.\",\n            \"address\": \"Paseo Dr. Marañón, 14\",\n            \"province\": \"guipuzcoa\",\n            \"postalCode\": \"20009\",\n            \"startingDate\": \"2020-04-09T16:45:00.000Z\",\n            \"capacity\": 8,\n            \"creatorId\": \"5e145b4f5591df48f0316f07\"\n        }\n    ],\n    \"message\": \"Status 200: Meetings retrieved successfully.\"\n}"
+				}
+			]
+		},
+		{
+			"name": "GET /meetings/:meetingId",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://animea-gateway.herokuapp.com/meetings/api/v1/meetings/5e07be8b1c9d4400001ced56",
+					"protocol": "https",
+					"host": [
+						"animea-gateway",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"meetings",
+						"api",
+						"v1",
+						"meetings",
+						"5e07be8b1c9d4400001ced56"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GET /meetings/:meetingId",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://animea-gateway.herokuapp.com/meetings/api/v1/meetings/5e07be8b1c9d4400001ced56",
+							"protocol": "https",
+							"host": [
+								"animea-gateway",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"meetings",
+								"api",
+								"v1",
+								"meetings",
+								"5e07be8b1c9d4400001ced56"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Server",
+							"value": "Cowboy"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "626"
+						},
+						{
+							"key": "Etag",
+							"value": "W/\"272-RPMZMcFAgYZqw/wdoIJtEd58DEg\""
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 16 Jan 2020 11:32:46 GMT"
+						},
+						{
+							"key": "Via",
+							"value": "1.1 vegur, 1.1 vegur"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"meeting\": {\n        \"members\": [\n            \"5e145acd5591df48f0316f02\",\n            \"5e145b3c5591df48f0316f05\",\n            \"5e145b465591df48f0316f06\"\n        ],\n        \"_id\": \"5e07be8b1c9d4400001ced56\",\n        \"name\": \"Naruto come alive\",\n        \"description\": \"The series tells the story of Naruto Uzumaki, a young ninja who seeks to gain recognition from his peers and also dreams of becoming the Hokage, the leader of his village.\",\n        \"address\": \"Calle de Manuel Lasala, 16\",\n        \"province\": \"zaragoza\",\n        \"postalCode\": \"50006\",\n        \"startingDate\": \"2020-06-26T18:30:00.000Z\",\n        \"endingDate\": \"2020-06-27T02:30:00.000Z\",\n        \"capacity\": 4,\n        \"creatorId\": \"5e145acd5591df48f0316f02\"\n    },\n    \"message\": \"Status 200: Meeting retrieved successfully.\"\n}"
+				}
+			]
+		},
+		{
+			"name": "GET /meetings/user/:userId/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://animea-gateway.herokuapp.com/meetings/api/v1/meetings/user/5e145acd5591df48f0316f02",
+					"protocol": "https",
+					"host": [
+						"animea-gateway",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"meetings",
+						"api",
+						"v1",
+						"meetings",
+						"user",
+						"5e145acd5591df48f0316f02"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GET /meetings/user/:userId/",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://animea-gateway.herokuapp.com/meetings/api/v1/meetings/user/5e145acd5591df48f0316f02",
+							"protocol": "https",
+							"host": [
+								"animea-gateway",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"meetings",
+								"api",
+								"v1",
+								"meetings",
+								"user",
+								"5e145acd5591df48f0316f02"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Server",
+							"value": "Cowboy"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "4831"
+						},
+						{
+							"key": "Etag",
+							"value": "W/\"12df-VQYCk9U/pgkYXKIXqLjvRclFi98\""
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 16 Jan 2020 11:58:38 GMT"
+						},
+						{
+							"key": "Via",
+							"value": "1.1 vegur, 1.1 vegur"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"meetings\": [\n        {\n            \"members\": [\n                \"5e145acd5591df48f0316f02\",\n                \"5e145b225591df48f0316f03\",\n                \"5e145b3c5591df48f0316f05\",\n                \"5e145b465591df48f0316f06\",\n                \"5e145b4f5591df48f0316f07\"\n            ],\n            \"_id\": \"5e07ad761c9d4400001ced4a\",\n            \"name\": \"Death Note come alive\",\n            \"description\": \"The series centers around a high school student who discovers a supernatural notebook that allows him to kill anyone by writing the victim's name while picturing their face.\",\n            \"address\": \"Calle María de Molina, 13\",\n            \"province\": \"cordoba\",\n            \"postalCode\": \"14011\",\n            \"startingDate\": \"2020-05-20T17:30:00.000Z\",\n            \"endingDate\": \"2020-05-21T17:30:00.000Z\",\n            \"capacity\": 20,\n            \"creatorId\": \"5e145b225591df48f0316f03\"\n        },\n        {\n            \"members\": [\n                \"5e145acd5591df48f0316f02\",\n                \"5e145b225591df48f0316f03\",\n                \"5e145b465591df48f0316f06\"\n            ],\n            \"_id\": \"5e07ba481c9d4400001ced4f\",\n            \"name\": \"Fullmetal Alchemist: Brotherhood come alive\",\n            \"description\": \"Brothers Edward and Alphonse Elric are raised by their mother Trisha Elric in the remote village of Resembool in the country of Amestris. Their father Hohenheim, a noted and very gifted alchemist, abandoned his family while the boys were still young, and while in Trisha's care they began to show an affinity for alchemy.\",\n            \"address\": \"Calle Zabalbide, 27\",\n            \"province\": \"vizcaya\",\n            \"postalCode\": \"48006\",\n            \"startingDate\": \"2020-07-27T15:35:00.000Z\",\n            \"endingDate\": \"2020-07-27T23:00:00.000Z\",\n            \"capacity\": 25,\n            \"creatorId\": \"5e145b225591df48f0316f03\"\n        },\n        {\n            \"members\": [\n                \"5e145acd5591df48f0316f02\",\n                \"5e145b225591df48f0316f03\",\n                \"5e145b3c5591df48f0316f05\"\n            ],\n            \"_id\": \"5e07bc821c9d4400001ced52\",\n            \"name\": \"Tokyo Ghoul come alive\",\n            \"description\": \"Tokyo Ghoul is set in an alternate reality where ghouls, creatures that look like normal people but can only survive by eating human flesh, live amongst the human population in secrecy, hiding their true nature in order to evade pursuit from the authorities.\",\n            \"address\": \"Calle Andrés Bernáldez, 1\",\n            \"province\": \"sevilla\",\n            \"postalCode\": \"41005\",\n            \"startingDate\": \"2020-05-29T16:45:00.000Z\",\n            \"endingDate\": \"2020-05-29T19:45:00.000Z\",\n            \"capacity\": 10,\n            \"creatorId\": \"5e145acd5591df48f0316f02\"\n        },\n        {\n            \"members\": [\n                \"5e145acd5591df48f0316f02\",\n                \"5e145b3c5591df48f0316f05\",\n                \"5e145b465591df48f0316f06\"\n            ],\n            \"_id\": \"5e07bd431c9d4400001ced53\",\n            \"name\": \"Steins;Gate come alive\",\n            \"description\": \"The story follows a group of students as they discover and develop technology that gives them the means to change the past.\",\n            \"address\": \"Calle Urbión, 1\",\n            \"province\": \"sevilla\",\n            \"postalCode\": \"41005\",\n            \"startingDate\": \"2020-05-14T10:30:00.000Z\",\n            \"endingDate\": \"2020-05-14T14:45:00.000Z\",\n            \"capacity\": 10,\n            \"creatorId\": \"5e145acd5591df48f0316f02\"\n        },\n        {\n            \"members\": [\n                \"5e145acd5591df48f0316f02\",\n                \"5e145b3c5591df48f0316f05\",\n                \"5e145b465591df48f0316f06\"\n            ],\n            \"_id\": \"5e07be8b1c9d4400001ced56\",\n            \"name\": \"Naruto come alive\",\n            \"description\": \"The series tells the story of Naruto Uzumaki, a young ninja who seeks to gain recognition from his peers and also dreams of becoming the Hokage, the leader of his village.\",\n            \"address\": \"Calle de Manuel Lasala, 16\",\n            \"province\": \"zaragoza\",\n            \"postalCode\": \"50006\",\n            \"startingDate\": \"2020-06-26T18:30:00.000Z\",\n            \"endingDate\": \"2020-06-27T02:30:00.000Z\",\n            \"capacity\": 4,\n            \"creatorId\": \"5e145acd5591df48f0316f02\"\n        },\n        {\n            \"members\": [\n                \"5e145acd5591df48f0316f02\"\n            ],\n            \"_id\": \"5e07bffb1c9d4400001ced57\",\n            \"name\": \"Angel Beats! come alive\",\n            \"description\": \"The story takes place in the afterlife and focuses on Otonashi, a boy who lost his memories of his life after dying. He is enrolled into the afterlife school and meets a girl named Yuri who invites him to join the Afterlife Battlefront.\",\n            \"address\": \"Calle Manuel Ángel Ferrer, 16\",\n            \"province\": \"huesca\",\n            \"postalCode\": \"22003\",\n            \"startingDate\": \"2019-11-10T13:30:00.000Z\",\n            \"endingDate\": \"2019-11-10T15:45:00.000Z\",\n            \"capacity\": 50,\n            \"creatorId\": \"5e145acd5591df48f0316f02\"\n        },\n        {\n            \"members\": [\n                \"5e145acd5591df48f0316f02\",\n                \"5e145b225591df48f0316f03\",\n                \"5e145b3c5591df48f0316f05\"\n            ],\n            \"_id\": \"5e07c2601c9d4400001ced59\",\n            \"name\": \"Mirai Nikki come alive\",\n            \"description\": \"The plot depicts the Diary Game, a deadly battle royal between 12 different individuals who are given \\\"Future Diaries\\\", special diaries that can predict the future, by Deus Ex Machina, the God of Time and Space, with the last survivor becoming his heir.\",\n            \"address\": \"Calle Diego Laínez, 8I\",\n            \"province\": \"burgos\",\n            \"postalCode\": \"09005\",\n            \"startingDate\": \"2020-07-16T19:15:00.000Z\",\n            \"capacity\": 5,\n            \"creatorId\": \"5e145acd5591df48f0316f02\"\n        },\n        {\n            \"members\": [\n                \"5e145acd5591df48f0316f02\",\n                \"5e145b225591df48f0316f03\"\n            ],\n            \"_id\": \"5e07c4851c9d4400001ced5b\",\n            \"name\": \"Kimi no Na wa. come alive\",\n            \"description\": \"The series tells the story about a high school boy in Tokyo and a high school girl in a rural town who suddenly and inexplicably begin to swap bodies.\",\n            \"address\": \"Calle de Jerónima Galés, 47\",\n            \"province\": \"valencia\",\n            \"postalCode\": \"46017\",\n            \"startingDate\": \"2020-02-14T18:00:00.000Z\",\n            \"endingDate\": \"2020-02-14T21:30:00.000Z\",\n            \"creatorId\": \"5e145b225591df48f0316f03\"\n        }\n    ],\n    \"message\": \"Status 200: User meetings retrieved successfully.\"\n}"
+				}
+			]
+		},
+		{
+			"name": "POST /meetings",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMTQ1YjIyNTU5MWRmNDhmMDMxNmYwMyIsImlhdCI6MTU3OTI2NTI1NSwiZXhwIjoxNTc5MzUxNjU1fQ.jrTEdiuHI7nPA35P3RhN6U3RidBYskpe7Hf_7a7N29I",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Naruto Marathon\",\r\n    \"description\": \"We will watch all the episodes we can during the night.\",\r\n    \"address\": \"Carrer de Mallorca, 18\",\r\n    \"province\": \"tarragona\",\r\n    \"postalCode\": \"43001\",\r\n    \"startingDate\": \"2020-11-03T22:35:00.000Z\",\r\n    \"endingDate\": \"2020-11-04T04:30:00.000Z\",\r\n    \"capacity\": 80\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://animea-gateway.herokuapp.com/meetings/api/v1/meetings/",
+					"protocol": "https",
+					"host": [
+						"animea-gateway",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"meetings",
+						"api",
+						"v1",
+						"meetings",
+						""
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "POST /meetings",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMTQ1YjIyNTU5MWRmNDhmMDMxNmYwMyIsImlhdCI6MTU3OTE3NjA1NywiZXhwIjoxNTc5MjYyNDU3fQ.RU05fr_iTZ3tRtP1s1L0xWF4MwJoqcSE1MA_ru5TO1o",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Naruto Marathon\",\r\n    \"description\": \"We will watch all the episodes we can during the night.\",\r\n    \"address\": \"Carrer de Mallorca, 18\",\r\n    \"province\": \"tarragona\",\r\n    \"postalCode\": \"43001\",\r\n    \"startingDate\": \"2020-11-03T22:35:00.000Z\",\r\n    \"endingDate\": \"2020-11-04T04:30:00.000Z\",\r\n    \"capacity\": 80\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://animea-gateway.herokuapp.com/meetings/api/v1/meetings/",
+							"protocol": "https",
+							"host": [
+								"animea-gateway",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"meetings",
+								"api",
+								"v1",
+								"meetings",
+								""
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Server",
+							"value": "Cowboy"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "458"
+						},
+						{
+							"key": "Etag",
+							"value": "W/\"1ca-RhZE7NVyozvtUwTwK61T6wo7Y2Q\""
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 16 Jan 2020 12:02:33 GMT"
+						},
+						{
+							"key": "Via",
+							"value": "1.1 vegur, 1.1 vegur"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"meeting\": {\n        \"members\": [\n            \"5e145b225591df48f0316f03\"\n        ],\n        \"_id\": \"5e2050d8b0bad8001ca52133\",\n        \"name\": \"Naruto Marathon\",\n        \"description\": \"We will watch all the episodes we can during the night.\",\n        \"address\": \"Carrer de Mallorca, 18\",\n        \"province\": \"tarragona\",\n        \"postalCode\": \"43001\",\n        \"startingDate\": \"2020-11-03T22:35:00.000Z\",\n        \"endingDate\": \"2020-11-04T04:30:00.000Z\",\n        \"capacity\": 80,\n        \"creatorId\": \"5e145b225591df48f0316f03\",\n        \"__v\": 0\n    },\n    \"message\": \"Status 201: Meeting successfully created!\"\n}"
+				}
+			]
+		},
+		{
+			"name": "POST /meetings/join/:meetingId",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMTQ1YjNjNTU5MWRmNDhmMDMxNmYwNSIsImlhdCI6MTU3OTE3NjYyMiwiZXhwIjoxNTc5MjYzMDIyfQ.fEznvGNIa8k7uKXvmyKNEjF0mjWMT6zhthcFSWeGR2s",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://animea-gateway.herokuapp.com/meetings/api/v1/meetings/join/5e20b500edd7f4001cc828a6",
+					"protocol": "https",
+					"host": [
+						"animea-gateway",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"meetings",
+						"api",
+						"v1",
+						"meetings",
+						"join",
+						"5e20b500edd7f4001cc828a6"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "POST /meetings/join/:meetingId",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMTQ1YjNjNTU5MWRmNDhmMDMxNmYwNSIsImlhdCI6MTU3OTE3NjYyMiwiZXhwIjoxNTc5MjYzMDIyfQ.fEznvGNIa8k7uKXvmyKNEjF0mjWMT6zhthcFSWeGR2s",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://animea-gateway.herokuapp.com/meetings/api/v1/meetings/join/5e2050d8b0bad8001ca52133",
+							"protocol": "https",
+							"host": [
+								"animea-gateway",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"meetings",
+								"api",
+								"v1",
+								"meetings",
+								"join",
+								"5e2050d8b0bad8001ca52133"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Server",
+							"value": "Cowboy"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "511"
+						},
+						{
+							"key": "Etag",
+							"value": "W/\"1ff-EotvxuOo0SMT7JM7VcVhYSQEPy8\""
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 16 Jan 2020 12:10:48 GMT"
+						},
+						{
+							"key": "Via",
+							"value": "1.1 vegur, 1.1 vegur"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"meeting\": {\n        \"members\": [\n            \"5e145b225591df48f0316f03\",\n            \"5e145b305591df48f0316f04\",\n            \"5e145b3c5591df48f0316f05\"\n        ],\n        \"_id\": \"5e2050d8b0bad8001ca52133\",\n        \"name\": \"Naruto Marathon\",\n        \"description\": \"We will watch all the episodes we can during the night.\",\n        \"address\": \"Carrer de Mallorca, 18\",\n        \"province\": \"tarragona\",\n        \"postalCode\": \"43001\",\n        \"startingDate\": \"2020-11-03T22:35:00.000Z\",\n        \"endingDate\": \"2020-11-04T04:30:00.000Z\",\n        \"capacity\": 80,\n        \"creatorId\": \"5e145b225591df48f0316f03\",\n        \"__v\": 0\n    },\n    \"message\": \"Status 200: Meeting joined successfully!\"\n}"
+				}
+			]
+		},
+		{
+			"name": "PUT /meetings/:meetingId",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMTQ1YjIyNTU5MWRmNDhmMDMxNmYwMyIsImlhdCI6MTU3OTE3NjczMiwiZXhwIjoxNTc5MjYzMTMyfQ.Hoa-cUzHrOmjLUNl-uOba0djNUBb-LBeQT2D8qJwsD4",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \" UPDATED Naruto Marathon\",\r\n    \"description\": \"We will watch all the episodes we can during the night.\",\r\n    \"address\": \"Carrer de Mallorca, 18\",\r\n    \"province\": \"tarragona\",\r\n    \"postalCode\": \"43001\",\r\n    \"startingDate\": \"2020-11-03T22:35:00.000Z\",\r\n    \"endingDate\": \"2020-11-04T04:30:00.000Z\",\r\n    \"capacity\": 80\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://animea-gateway.herokuapp.com/meetings/api/v1/meetings/5e20b500edd7f4001cc828a6",
+					"protocol": "https",
+					"host": [
+						"animea-gateway",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"meetings",
+						"api",
+						"v1",
+						"meetings",
+						"5e20b500edd7f4001cc828a6"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "PUT /meetings/:meetingId",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMTQ1YjIyNTU5MWRmNDhmMDMxNmYwMyIsImlhdCI6MTU3OTE3NjczMiwiZXhwIjoxNTc5MjYzMTMyfQ.Hoa-cUzHrOmjLUNl-uOba0djNUBb-LBeQT2D8qJwsD4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \" UPDATED Naruto Marathon\",\r\n    \"description\": \"We will watch all the episodes we can during the night.\",\r\n    \"address\": \"Carrer de Mallorca, 18\",\r\n    \"province\": \"tarragona\",\r\n    \"postalCode\": \"43001\",\r\n    \"startingDate\": \"2020-11-03T22:35:00.000Z\",\r\n    \"endingDate\": \"2020-11-04T04:30:00.000Z\",\r\n    \"capacity\": 80\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://animea-gateway.herokuapp.com/meetings/api/v1/meetings/5e2050d8b0bad8001ca52133",
+							"protocol": "https",
+							"host": [
+								"animea-gateway",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"meetings",
+								"api",
+								"v1",
+								"meetings",
+								"5e2050d8b0bad8001ca52133"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Server",
+							"value": "Cowboy"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "521"
+						},
+						{
+							"key": "Etag",
+							"value": "W/\"209-75TPeQEUYSHrJT+e484Y8R1JK2I\""
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 16 Jan 2020 12:13:48 GMT"
+						},
+						{
+							"key": "Via",
+							"value": "1.1 vegur, 1.1 vegur"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"meeting\": {\n        \"members\": [\n            \"5e145b225591df48f0316f03\",\n            \"5e145b305591df48f0316f04\",\n            \"5e145b3c5591df48f0316f05\"\n        ],\n        \"_id\": \"5e2050d8b0bad8001ca52133\",\n        \"name\": \" UPDATED Naruto Marathon\",\n        \"description\": \"We will watch all the episodes we can during the night.\",\n        \"address\": \"Carrer de Mallorca, 18\",\n        \"province\": \"tarragona\",\n        \"postalCode\": \"43001\",\n        \"startingDate\": \"2020-11-03T22:35:00.000Z\",\n        \"endingDate\": \"2020-11-04T04:30:00.000Z\",\n        \"capacity\": 80,\n        \"creatorId\": \"5e145b225591df48f0316f03\",\n        \"__v\": 0\n    },\n    \"message\": \"Status 200: Meeting successfully updated!\"\n}"
+				}
+			]
+		},
+		{
+			"name": "DELETE /meetings/:meetingId",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMTQ1YjIyNTU5MWRmNDhmMDMxNmYwMyIsImlhdCI6MTU3OTE3NjczMiwiZXhwIjoxNTc5MjYzMTMyfQ.Hoa-cUzHrOmjLUNl-uOba0djNUBb-LBeQT2D8qJwsD4",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://animea-gateway.herokuapp.com/meetings/api/v1/meetings/5e20b500edd7f4001cc828a6",
+					"protocol": "https",
+					"host": [
+						"animea-gateway",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"meetings",
+						"api",
+						"v1",
+						"meetings",
+						"5e20b500edd7f4001cc828a6"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "DELETE /meetings/:meetingId",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMTQ1YjIyNTU5MWRmNDhmMDMxNmYwMyIsImlhdCI6MTU3OTE3NjczMiwiZXhwIjoxNTc5MjYzMTMyfQ.Hoa-cUzHrOmjLUNl-uOba0djNUBb-LBeQT2D8qJwsD4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://animea-gateway.herokuapp.com/meetings/api/v1/meetings/5e20b500edd7f4001cc828a6",
+							"protocol": "https",
+							"host": [
+								"animea-gateway",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"meetings",
+								"api",
+								"v1",
+								"meetings",
+								"5e20b500edd7f4001cc828a6"
+							]
+						}
+					},
+					"status": "No Content",
+					"code": 204,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Server",
+							"value": "Cowboy"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token"
+						},
+						{
+							"key": "Etag",
+							"value": "W/\"37-is7WX2R8DVXFmHe0xhnjwYVSgZo\""
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 16 Jan 2020 19:11:18 GMT"
+						},
+						{
+							"key": "Via",
+							"value": "1.1 vegur, 1.1 vegur"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "DELETE /meetings/leave/:meetingId",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMTQ1YjNjNTU5MWRmNDhmMDMxNmYwNSIsImlhdCI6MTU3OTE3NjYyMiwiZXhwIjoxNTc5MjYzMDIyfQ.fEznvGNIa8k7uKXvmyKNEjF0mjWMT6zhthcFSWeGR2s",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://animea-gateway.herokuapp.com/meetings/api/v1/meetings/leave/5e20b500edd7f4001cc828a6",
+					"protocol": "https",
+					"host": [
+						"animea-gateway",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"meetings",
+						"api",
+						"v1",
+						"meetings",
+						"leave",
+						"5e20b500edd7f4001cc828a6"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "DELETE /meetings/leave/:meetingId",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMTQ1YjNjNTU5MWRmNDhmMDMxNmYwNSIsImlhdCI6MTU3OTE3NjYyMiwiZXhwIjoxNTc5MjYzMDIyfQ.fEznvGNIa8k7uKXvmyKNEjF0mjWMT6zhthcFSWeGR2s",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://animea-gateway.herokuapp.com/meetings/api/v1/meetings/leave/5e2050d8b0bad8001ca52133",
+							"protocol": "https",
+							"host": [
+								"animea-gateway",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"meetings",
+								"api",
+								"v1",
+								"meetings",
+								"leave",
+								"5e2050d8b0bad8001ca52133"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Server",
+							"value": "Cowboy"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "499"
+						},
+						{
+							"key": "Etag",
+							"value": "W/\"1f3-PODAQU4lj1SaHUkZke+2/NwFAPc\""
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 16 Jan 2020 12:14:41 GMT"
+						},
+						{
+							"key": "Via",
+							"value": "1.1 vegur, 1.1 vegur"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"meeting\": {\n        \"members\": [\n            \"5e145b225591df48f0316f03\",\n            \"5e145b305591df48f0316f04\"\n        ],\n        \"_id\": \"5e2050d8b0bad8001ca52133\",\n        \"name\": \" UPDATED Naruto Marathon\",\n        \"description\": \"We will watch all the episodes we can during the night.\",\n        \"address\": \"Carrer de Mallorca, 18\",\n        \"province\": \"tarragona\",\n        \"postalCode\": \"43001\",\n        \"startingDate\": \"2020-11-03T22:35:00.000Z\",\n        \"endingDate\": \"2020-11-04T04:30:00.000Z\",\n        \"capacity\": 80,\n        \"creatorId\": \"5e145b225591df48f0316f03\",\n        \"__v\": 0\n    },\n    \"message\": \"Status 200: You successfully left the meeting.\"\n}"
+				}
+			]
+		}
+	],
+	"protocolProfileBehavior": {}
+}
