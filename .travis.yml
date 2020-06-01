@@ -1,8 +1,8 @@
 sudo: required
 language: node_js
 arch:
-  - amd64
-  - arm64
+    - amd64
+    - arm64
 node_js:
     - "9"
 services:
